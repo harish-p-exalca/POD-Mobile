@@ -1,0 +1,7 @@
+{
+  "name": "pod",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

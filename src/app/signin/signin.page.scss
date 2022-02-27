@@ -1,0 +1,162 @@
+.mainimg{
+    height: 30.3%;
+    width: 100%;
+    
+    
+ }
+ .logodiv{
+   width: 29.5%;
+   height: 6%;
+   opacity: 0.83;
+   border-radius: 5px;
+   background-color: #ffffff;
+   position: absolute;
+   left: 33.5%;
+   top:3.2%;
+   
+ }
+
+ .logotxt{
+   width: 86.4%;
+   height: 65.8%;
+   object-fit: contain;
+   position: absolute;
+   left: 6.8%;
+   top: 16.4%;
+ }
+ .welcome{
+  width: 30.8%;
+  height: 4%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 6vw;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.33;
+  letter-spacing: 0.8px;
+  text-align: left;
+  color: #292929;
+  position: absolute;
+   left: 36.7%;
+   top: 37.6%;
+ }
+ .signin{
+  width: 38.6%;
+  height: 2%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 3.5vw;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.35;
+  letter-spacing: normal;
+  text-align: left;
+  color: #7b7b7b;
+  position: absolute;
+  top: 42%;
+  left: 33.3%;
+ }
+ .Username {
+  
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 4vw;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  text-align: left;
+  line-height: 1.33;
+  color: #717171;
+}
+.userfeild{
+  width: 92%;
+  height: 9.5%;
+  border-radius: 1vw;
+  border: solid 2px #afafaf;
+  background-color: #ffffff;
+  position: absolute;
+  top: 50.1%;
+  left: 4%;
+}
+.userinput{
+  width: 37%;
+ 
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 4vw;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.33;
+  letter-spacing: normal;
+  text-align: left;
+  color: #292929;
+}
+.userlogo{
+  height: 28.5%;
+  width: 4.5%;
+  position: absolute;
+  top: 42.1%;
+  left: 90.7%;
+}
+
+.password {
+  
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 4vw;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  text-align: left;
+  line-height: 1.33;
+  color: #717171;
+}
+.passfeild{
+  width: 92%;
+  height: 10%;
+  border-radius: 1vw;
+  border: solid 2px #afafaf;
+  background-color: #ffffff;
+  position: absolute;
+  top: 63.5%;
+  left: 4%;
+}
+.passinput{
+  width: 37%;
+ 
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 4vw;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.33;
+  letter-spacing: normal;
+  text-align: left;
+  color: #292929;
+}
+.passlogo{
+  height: 18.1%;
+  width: 4.5%;
+  position: absolute;
+  top: 48.1%;
+  left: 90.7%;
+}
+.btn{
+  width: 47.6%;
+  height: 7.1%;
+  border-radius: 1vw;
+ background-color:#ff9e45;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 4vw;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.33;
+  letter-spacing: 1px;
+  text-align: center;
+  color: white;
+  position: absolute;
+  left: 26.3%;
+  top: 79.1%;
+  
+}

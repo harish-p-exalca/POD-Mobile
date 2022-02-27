@@ -1,0 +1,46 @@
+<ion-app>
+  <ion-menu side="start" content-id="main-content" menuId="main-menu">
+    <ion-header style="background-image: linear-gradient(to bottom, #fd9e47, #fdac61 49%, #ff9e45); height: 65px;" fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="center start">
+      <div>
+        <ion-title class="displayname">{{displayname}}</ion-title>
+      </div>
+      <div>
+        <ion-title class="email">{{emailaddress}}</ion-title>
+      </div>
+    </ion-header>
+
+
+    <ion-content>
+      <ion-list>
+        <ion-menu-toggle>
+          <ion-item (click)="onclickCharts()">
+            <ion-icon name="library" slot="start"></ion-icon>
+            <ion-label>Dashboard</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+
+        <ion-menu-toggle>
+          <ion-item (click)="onclickInvoice()">
+            <ion-icon name="newspaper" slot="start"></ion-icon>
+            <ion-label>Invoice</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+
+        <ion-menu-toggle>
+          <ion-item (click)="onclickOntimeAnLate()">
+            <ion-icon  name="checkmark-done-circle" slot="start"></ion-icon>
+            <ion-label>On Time and Late Invoice</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+
+        <ion-menu-toggle>
+          <ion-item (click)="checkForUpdate()">
+            <ion-icon name="logo-google-playstore" slot="start"></ion-icon>
+            <ion-label>Check Update</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+  <ion-router-outlet id="main-content"></ion-router-outlet>
+</ion-app>

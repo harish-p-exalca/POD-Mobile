@@ -1,0 +1,272 @@
+<ion-header class="header" fxLayout="row" fxLayoutAlign="space-around center">
+  <div>
+    <ion-buttons slot="start">
+      <ion-menu-button menu="main-menu" style="color: white"></ion-menu-button>
+    </ion-buttons>
+  </div>
+  <div fxLayout=column fxLayoutAlign="center start" fxFlex="50">
+    <ion-label class="name">Hello {{userdetails.displayName}},</ion-label>
+    <ionlabel class="A-and-P">Invoice Description</ionlabel>
+  </div>
+  <div>
+
+  </div>
+
+  <div fxFlex="20" fxLayoutAlign="center center">
+    <img (click)="onClickProfile($event)" class="pic" src="../../assets/img/user.svg">
+  </div>
+</ion-header>
+
+<ion-content>
+
+  <div
+    style="width: 100%; overflow: auto; display: flex; justify-content: space-around; align-items:center ; flex: 1 1 auto; flex-direction: column;">
+    <div
+      style="width: 100%; height: 100%; display: flex; align-items: flex-start;justify-content: center; margin-top: 5%;">
+      <ion-card class="maincard" fxLayout="column">
+        <ion-card-header class="maincard-header">
+          <div class="headerline"></div>
+          <div class="headingbox">
+            <ion-label class="heading">INVOICE</ion-label>
+          </div>
+          <div class="invoicedescription">
+            <div>
+              <ion-label class="invoice">INVOICE NO</ion-label><br>
+              <ion-label class="invoiceno">{{invoicedetails.ODIN}}</ion-label>
+
+
+            </div>
+            <div>
+
+              <ion-label class="invoice">INVOICE DT</ion-label><br>
+
+              <ion-label class="invoiceno">{{inv_dt}}</ion-label>
+
+
+            </div>
+
+            <div>
+              <ion-label class="invoice">INVOICE TYPE</ion-label><br>
+              <ion-label class="invoiceno">{{invoicedetails.INV_TYPE}}</ion-label>
+            </div>
+
+          </div>
+        </ion-card-header>
+
+
+        <ion-card-content fxFlex="100" style="width: 100%; padding: 0%; display: flex; flex-direction: column;">
+          <div fxFlex="25"
+            style="width: 100%;  display: flex; justify-content: space-around; align-items: center; border-bottom: 1.5px #e2e2e2 solid">
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+              <img class="div1img" src="../../assets/img/truck (2).svg">
+              <ion-label class="div1txt" for="a1">Vehicle ID</ion-label>
+              <ion-label class="div1det" id="a1">{{invoicedetails.VEHICLE_NO}}</ion-label>
+            </div>
+
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+              <img class="div1img" src="../../assets/img/send (2).svg">
+              <ion-label class="div1txt" for="a2">Forward Agent</ion-label>
+              <ion-label class="div1det" id="a2">{{invoicedetails.FWD_AGENT}}</ion-label>
+            </div>
+
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+              <img class="div1img" src="../../assets/img/invoice (2).svg">
+              <ion-label class="div1txt" for="a3">Ewaybill No</ion-label>
+              <ion-label class="div1det" id="a3">{{invoicedetails.EWAYBILL_NO}}</ion-label>
+            </div>
+
+
+
+          </div>
+          <div fxLayout="column" fxFlex="75" style="width: 100%; ">
+            <div fxLayout="row" fxFlex style="border-bottom: 1.5px #e2e2e2 solid;width: 100% ;">
+              <div fxLayout="row" fxFlex>
+                <div fxFlex="40" style="height: 100%;" fxLayoutAlign="center center"><img class="div1img"
+                    src="../../assets/img/shipping-and-delivery (3).svg"></div>
+                <div fxFlex="60" style="height: 100%;" fxLayoutAlign="center start" fxLayout="column wrap">
+                  <ion-label class="div1txt">LR NUMBER</ion-label>
+                  <ion-label style="width: 85%;" class="div1det">{{invoicedetails.LR_NO}}</ion-label>
+                </div>
+              </div>
+
+
+
+              <div fxLayout="row" fxFlex style="height: 100%;;border-left: 1.5px #e2e2e2 solid;">
+                <div fxFlex="40" style="height: 100%;" fxLayoutAlign="center center"><img class="div1img"
+                    src="../../assets/img/calendar.svg">
+                </div>
+                <div fxFlex="60" style="height: 100%;" fxLayoutAlign="center start" fxLayout="column">
+                  <ion-label class="div1txt">LR DATE</ion-label>
+                  <ion-label style="width: 85%;" class="div1det">{{lr_dt}}</ion-label>
+                </div>
+              </div>
+
+
+
+            </div>
+
+
+
+
+
+            <div fxLayout="row" fxFlex>
+
+              <div fxLayout="row" fxFlex style="height: 100%;">
+                <div fxFlex="40" style="height: 100%;" fxLayoutAlign="center center"><img class="div1img"
+                    src="../../assets/img/robot.svg"></div>
+                <div fxFlex="60" style="height: 100%;" fxLayoutAlign="center start" fxLayout="column">
+                  <ion-label class="div1txt">PLANT</ion-label>
+                  <ion-label style="width: 85%;" class="div1det">{{invoicedetails.PLANT}}</ion-label>
+                </div>
+              </div>
+
+
+
+              <div fxLayout="row" fxFlex style="border-left: 1.5px  #e2e2e2 solid; height: 100%;">
+                <div style="height: 100%;" fxFlex="40" fxLayoutAlign="center center"><img class="div1img"
+                    src="../../assets/img/organization.svg">
+                </div>
+                <div style="height: 100%;" fxFlex="60" fxLayoutAlign="center start" fxLayout="column">
+                  <ion-label class="div1txt">REF.NO</ion-label>
+                  <ion-label style="width: 85%;" class="div1det">{{invoicedetails.INV_NO}}</ion-label>
+                </div>
+              </div>
+            </div>
+
+            <div fxLayout="row" fxFlex
+              style="width: 100%;  display: flex; justify-content: space-around; align-items: center; border-top: 1.5px #e2e2e2 solid">
+
+              <div fxLayout="row" *ngIf="hide_custnameDiv" fxFlex style="height: 100%;">
+                <div fxFlex="40" style="height: 100%;" fxLayoutAlign="center center"><img class="div1img"
+                    src="../../assets/img/calendar.svg"></div>
+                <div fxFlex="60" style="height: 100%;" fxLayoutAlign="center start" fxLayout="column">
+                  <ion-label class="div1txt">PROP DELIVERY</ion-label>
+                  <ion-label style="width: 85%;" class="div1det">{{prop_dt}}</ion-label>
+                </div>
+              </div>
+
+              <div fxLayout="row" *ngIf="!hide_custnameDiv" fxFlex fxLayoutGap="10px" style="height: 100%;">
+                <div fxFlex="40" style="height: 100%;" fxLayoutAlign="end center"><img class="div1img"
+                    src="../../assets/img/calendar.svg"></div>
+                <div fxFlex="60" style="height: 100%;" fxLayoutAlign="center start" fxLayout="column">
+                  <ion-label class="div1txt">PROPOSED DELIVERY DT</ion-label>
+                  <ion-label style="width: 85%;" class="div1det">{{prop_dt}}</ion-label>
+                </div>
+              </div>
+
+
+              <div fxLayout="row" *ngIf="hide_custnameDiv" fxFlex
+                style="border-left: 1.5px  #e2e2e2 solid; height: 100%;">
+                <div style="height: 100%;" fxFlex="40" fxLayoutAlign="center center"><img class="div1img"
+                    src="../../assets/img/send (2).svg">
+                </div>
+                <div style="height: 100%;" fxFlex="60" fxLayoutAlign="center start" fxLayout="column">
+                  <ion-label class="div1txt">CUST.NAME</ion-label>
+                  <ion-label style="width: 85%;" class="div1det">{{invoicedetails.CUSTOMER_NAME}}</ion-label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+
+        </ion-card-content>
+      </ion-card>
+
+
+    </div>
+    <div style="width: 89.2%; height:63px;  display: flex; justify-content: flex-start; align-items:center;">
+      <div>
+        <ion-label class="invoice_item_details">Invoice Item Details</ion-label>
+        <div style="height: 5px; background-color: #4452c6; border-radius: 6px;"></div>
+      </div>
+    </div>
+
+
+
+    <div style="width:89.2%; overflow: auto;">
+
+
+
+      <form style="overflow: auto;" [formGroup]="dataForm">
+        <table class="table">
+
+          <thead>
+            <tr>
+              <th>Material Code</th>
+              <th>Invoice Qty</th>
+              <th>UOM</th>
+              <th>Recieved Qty</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="height: 10px;" formArrayName="items"
+              *ngFor="let item of dataForm.get('items').controls; let i = index;let d of description_data;let j=index">
+              <td>{{d.MATERIAL_CODE}}</td>
+              <td>{{d.QUANTITY}}</td>
+              <td>{{item.QUANTITY_UOM}}</td>
+              <td [formGroupName]="i">
+                <ion-item>
+                  <ion-input type="number" (ngModelChange)="onChangeQty($event,j)" formControlName="rcvd">{{item.rcvd }}
+                  </ion-input>
+
+                </ion-item>
+                <p style="color: red;"
+                  *ngIf="(dataForm.get('items').controls[i].get('rcvd').errors?.required)||(dataForm.get('items').controls[i].get('rcvd').errors?.max)||(dataForm.get('items').controls[i].get('rcvd').errors?.min)||(dataForm.get('items').controls[i].get('rcvd').errors?.pattern)">
+                  Invalid Qty</p>
+              </td>
+              <td [formGroupName]="i">
+                <mat-form-field style="width: 50%;"  appearance="standard">
+                  <mat-select  formControlName="key">
+                    <mat-option *ngFor="let reason of reasons;" [value]="reason.viewValue">
+                      {{reason.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                
+                </mat-form-field>
+                <!-- <select formControlName="key"  class="custom-select" id="gender2">
+                  <option   *ngFor="let reason of reasons;" [value]="reason.value">{{reason.viewValue}}</option>
+                  
+                </select> -->
+                <!-- <ion-select formControlName="key" interface="popover">
+                  <ion-select-option *ngFor="let reason of reasons;" [value]="reason.value">{{reason.viewValue}}
+                  </ion-select-option>
+                </ion-select> -->
+              </td>
+            </tr>
+            <tr>
+
+            </tr>
+          </tbody>
+
+        </table>
+      </form>
+
+    </div>
+
+
+
+
+
+
+  </div>
+
+
+
+</ion-content>
+<ion-footer class="ion-no-border" [hidden]="cnfbtn_hidden">
+  <ion-toolbar>
+    <div style="width: 100%; height: 50px; padding-right: 3%;padding-left: 3%;" fxLayout="row"
+      fxLayoutAlign="space-between center">
+      <button class="view" (click)="onFormSubmit()" [disabled]="disable_save"
+        [ngClass]="(disable_save)?'disablesave':'view'">
+        <ion-label class="view-txt" [ngClass]="(disable_save)?'disable_view-txt':'view-txt'">Save</ion-label>
+      </button>
+      <button class="confirm" (click)="descriptionConfirmModal()">
+        <img class="tick" src="../../assets/img/tick (3).svg">
+        <ion-label class="con-txt">Confirm</ion-label>
+      </button>
+    </div>
+  </ion-toolbar>
+</ion-footer>

@@ -1,0 +1,71 @@
+<div  fxLayout="column" style="margin-top: 40px;margin-bottom: 21px;margin-right: 10% ;margin-left: 10%;" fxFlex="100" fxLayoutAlign="space-between center">
+  <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="center center" style="width: 100%;" fxFlex="85">
+    
+    <div *ngIf="!hideforCustomer" style="justify-content: space-between;width: 100%; display: flex;align-items: center;">
+      <div >
+        <ion-label>
+          Organization:
+        </ion-label>
+      </div>
+      <div>
+        <input [(ngModel)]="organization" class="inpt">
+      </div>
+    </div>
+    <div *ngIf="!hideforCustomer"  style="justify-content: space-between;width: 100%; display: flex;align-items: center;" >
+      <div>
+        <ion-label>
+          Division:
+        </ion-label>
+      </div>
+      <div>
+        <input [(ngModel)]="division" class="inpt">
+      </div>
+    </div>
+    <div *ngIf="!hideforCustomer"  style="justify-content: space-between;width: 100%; display: flex;align-items: center;" >
+      <div>
+        <ion-label>
+          Plant:
+        </ion-label>
+      </div>
+      <div>
+        <!-- <input [(ngModel)]="plant" class="inpt"> -->
+        <mat-form-field style="width: 150px;" appearance="fill">
+          <mat-label>Plant</mat-label>
+          <mat-select [formControl]="plant" multiple>
+            
+            <mat-option *ngFor="let plants of PlantList" [value]="plants.PlantCode">{{plants.PlantCode}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+   
+    <div  style="justify-content: space-between;width: 100%; display: flex;align-items: center;" >
+      <div>
+        <ion-label>
+          Start Date:
+        </ion-label>
+      </div>
+      <div>
+        <input [(ngModel)]="st_date" type="date" class="inpt" placeholder="DD/MM/YYYY">
+      </div>
+    </div>
+    <div  style="justify-content: space-between;width: 100%; display: flex;align-items: center;" >
+      <div>
+        <ion-label>
+          End Date:
+        </ion-label>
+      </div>
+      <div><input [(ngModel)]="end_date" type="date" class="inpt"  placeholder="DD/MM/YYYY" ></div>
+
+    </div>
+   
+  </div>
+  
+  <div >
+    <div>
+      <button fxFlexAlign="stretch" (click)="save()" class="sumbtn">SEARCH</button>
+    </div>
+  </div>
+
+</div>
+

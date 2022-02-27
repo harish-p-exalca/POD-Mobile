@@ -1,0 +1,61 @@
+.dailogbox{
+    width: 77.9% ;
+    height: 300px;
+    
+    max-height:98vw ;
+    border-radius: 8px ;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.16) ;
+ background-color: white ;
+  border-top: 8px solid #fe9e46 ;
+  transform: translate(-50%, -50%);
+}
+.scnbtn{
+    width: 120px;
+  height: 30px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  border: solid 2px #4452c6;
+  background-color: #ffffff;
+}
+
+.upldbtn{
+    width: 120px;
+  height: 30px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: solid 1px #cccccc;
+  background-color: #ffffff;
+
+}
+
+
+.sumbtn{
+    width: 120px;
+  height: 30px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #4452c6;
+  color: #ffffff;
+}
+
+.inpt{
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #000000;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-radius: 0;
+    width: 50%;
+}
+
+
+.inpt:focus,select.form-control:focus {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}

@@ -1,0 +1,135 @@
+<ion-header class="header" fxLayout="row" fxLayoutAlign="space-around center">
+  <div>
+    <ion-buttons slot="start">
+      <ion-menu-button menu="main-menu" style="color: white"></ion-menu-button>
+    </ion-buttons>
+  </div>
+  <div fxLayout=column fxLayoutAlign="center start" fxFlex="50">
+    <ion-label class="name">Hello {{userdetails.displayName}},</ion-label>
+    <ionlabel class="A-and-P">On Time and Late Invoices</ionlabel>
+  </div>
+  <div>
+
+  </div>
+
+  <div fxFlex="20" fxLayoutAlign="center center">
+    <img (click)="onClickProfile($event)" class="pic" src="../../assets/img/user.svg">
+  </div>
+</ion-header>
+
+<ion-content #pageTop>
+  <div style="height: 50px; width: 100%; margin-bottom: 5px; ">
+    <ion-toolbar style="position: fixed;">
+      <div>
+        <ion-segment (ionChange)="segmentChanged($event)" [(ngModel)]="segment" mode="md" color="primary">
+          <ion-segment-button value=0>
+            <ion-label>LATE</ion-label>
+
+          </ion-segment-button>
+          <ion-segment-button value=1>
+            <ion-label>On Time</ion-label>
+
+          </ion-segment-button>
+        
+
+        </ion-segment>
+      </div>
+
+
+    </ion-toolbar>
+
+  </div>
+  <div class="search_div">
+
+    <button class="search_button" (click)="onClickFilterModal()">CLICK HERE TO SEARCH</button>
+  </div><br>
+
+  <ion-slides [options]="sliderOptions" #slides (ionSlideDidChange)="slideChanged()" scrollbar="true">
+    <ion-slide>
+      <div class="card-div" fxLayout="column" fxLayoutGap="10px">
+        <ion-card *ngFor="let d of FilterLateInv" class="card">
+          <ion-card-header class="card-header">
+            <ion-label class="invoiceno">INVOICE NO: <ion-label class="num">{{d.ODIN}}</ion-label>
+            </ion-label>
+          </ion-card-header>
+          <ion-card-content style="padding: 0%; width: 100%; height: 100%;">
+            <div class="cardbody">
+
+              <div>
+                <ion-label class="vehicle1">Vehicle No</ion-label><br>
+                <ion-label class="vehicleno1">{{d.VEHICLE_NO}}</ion-label>
+
+
+              </div>
+              <div>
+
+                <ion-label class="eway1"> Ewaybill No</ion-label><br>
+
+                <ion-label class="ewaybill1">{{d.EWAYBILL_NO}}</ion-label>
+
+
+              </div>
+
+              <div>
+                <ion-label class="outbound1">Outbound Delivery</ion-label><br>
+                <ion-label class="outbounddelivery1">{{d.OUTBOUND_DELIVERY}}</ion-label>
+              </div>
+            </div>
+            <div>
+              <button id="view" (click)="onClicknavigate(d,d.STATUS)" >
+                <ion-label class="view-txt">View Details</ion-label>
+              </button>
+
+            </div>
+          </ion-card-content>
+        </ion-card>
+        <ion-infinite-scroll threshold="10px" (ionInfinite)="loadMoreInvoices($event)">
+          <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+          </ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+      </div>
+      
+    </ion-slide>
+
+    <ion-slide>
+      <div class="card-div" fxLayout="column" fxLayoutGap="10px">
+        <ion-card *ngFor="let d of FilterOnTimeInv" class="card">
+          <ion-card-header class="card-header">
+            <ion-label class="invoiceno">INVOICE NO: <ion-label class="num">{{d.ODIN}}</ion-label>
+            </ion-label>
+          </ion-card-header>
+          <ion-card-content style="padding: 0%; width: 100%; height: 100%;">
+            <div class="cardbody">
+
+              <div>
+                <ion-label class="vehicle1">Vehicle No</ion-label><br>
+                <ion-label class="vehicleno1">{{d.VEHICLE_NO}}</ion-label>
+
+
+              </div>
+              <div>
+
+                <ion-label class="eway1"> Ewaybill No</ion-label><br>
+
+                <ion-label class="ewaybill1">{{d.EWAYBILL_NO}}</ion-label>
+
+
+              </div>
+
+              <div>
+                <ion-label class="outbound1">Outbound Delivery</ion-label><br>
+                <ion-label class="outbounddelivery1">{{d.OUTBOUND_DELIVERY}}</ion-label>
+              </div>
+            </div>
+            <div>
+              <button id="view" (click)="onClicknavigate(d,d.STATUS)" >
+                <ion-label class="view-txt">View Details</ion-label>
+              </button>
+
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </ion-slide>
+  </ion-slides>
+</ion-content>

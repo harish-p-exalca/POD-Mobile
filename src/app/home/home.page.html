@@ -1,0 +1,47 @@
+<ion-content>
+  <div fxFLex="100" fxLayout="column">
+    <div fxFlex>
+      <img class="mainimg" src="../../assets/img/imgpsh_mobile_save-1.png">
+      <div class="logodiv">
+        <img class="logotxt" src="../../assets/img/Image 1@3x.png">
+      </div>
+    </div>
+    <div fxLayout="column" style="margin-top:10%" fxLayoutAlign="space-around center">
+      <ion-label class="welcome">Welcome!</ion-label>
+      <ion-label class="signin">Sign in to your Account</ion-label>
+    </div>
+    <form [formGroup]="reactive_signin" (ngSubmit)="onClickSubmit()">
+      <div style="margin-top: 15%;display: flex;flex-direction: column; justify-content: center; align-items: center;">
+
+
+        <fieldset class="userfeild">
+          <legend class="Username">Username</legend>
+          <div style="width: 100%; display: flex;  justify-content: space-between; align-items: center;">
+            <ion-input type="text" formControlName="username" required class="userinput"></ion-input>
+            <img src="../../assets/img/user (1)@3x.png" class="userlogo">
+          </div>
+        </fieldset>
+
+        <fieldset class="passfeild">
+          <legend class="password">Password</legend>
+          <diV style="width: 100%; display: flex;  justify-content: space-between; align-items: center;">
+            <ion-input [type]="fieldTextType ? 'text' : 'password'" clear-on-edit="false" formControlName="password"
+              required class="passinput"></ion-input>
+            <img src="../../assets/img/eye@3x.png" class="passlogo" (click)="showpassword()">
+          </diV>
+        </fieldset>
+
+
+
+
+        <button type="submit" class="btn">Login</button>
+        <ion-label class="forgottxt" (click)="onlclickForgotPasswordModal()">Forgot Password?</ion-label>
+
+      </div>
+    </form>
+    <div fxFlex fxLayoutAlign="center center" class="version-wrapper">
+      <span>Version {{appVersion}}</span>
+    </div>
+  </div>
+
+</ion-content>

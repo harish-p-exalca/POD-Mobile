@@ -1,0 +1,31 @@
+.dailogbox{
+    
+    margin-left: 5px;
+    margin-right: 5px;
+   
+}
+.inpt{
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #000000;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-radius: 0;
+    width: 150px;
+}
+
+
+.inpt:focus,select.form-control:focus {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.sumbtn{
+    width: 120px;
+  height: 50px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #4452c6;
+  color: #ffffff;
+}

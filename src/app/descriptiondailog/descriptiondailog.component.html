@@ -1,0 +1,39 @@
+
+  <div fxLayout="column" fxFlex="100" style="padding-top: 10%;width: 100%;;padding-bottom: 10%;padding-right: 5% ;padding-left: 5%;" fxLayoutAlign="space-around center">
+     <div fxFlex="25" style="width: 100%;" fxLayout="column" fxLayoutAlign="space-around center">
+       <div fxLayout="column" style="width: 100%;" fxLayoutAlign="space-between center">
+        <div fxLayout="row" style="width: 100%;" fxLayoutAlign="space-between center">
+          <ion-label style="width: 50%; font-size: small;">
+            Vehicle Report Dt: 
+            </ion-label>
+            <input [(ngModel)]="reportdate" type="date" [min]="mindate | date:'yyyy-MM-dd'" [max]="maxdate | date:'yyyy-MM-dd'" class="inpt" >
+         </div>
+         <p style="color: red;" *ngIf="reportdate=='' && submitclicked">This filed cannot be empty!</p>
+       </div>
+       
+     </div>
+     <div  fxFLex="30" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
+       <div  fxFLex="50" >
+         <button class="scnbtn" (click)="clickPicture()">
+           <img src="../../assets/img/scan.svg"><ion-label>SCAN</ion-label>
+         </button>
+         <ion-label>{{a}} img</ion-label>
+         
+       </div>
+       <div  fxFLex="50">
+        <input style="display: none" type="file" (change)="onFileChanged($event)" #fileInput>
+        <button fxFlexAlign="stretch" (click)="fileInput.click()" class="upldbtn">UPLOAD</button>
+         <ion-label>{{filename}}..</ion-label>
+       </div>
+       
+      
+     </div>
+     <div >
+       
+         <button fxFlexAlign="stretch" (click)="save()" class="sumbtn">SUBMIT</button>
+       
+     </div>
+
+  </div>
+ 
+

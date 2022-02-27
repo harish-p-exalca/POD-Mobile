@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="prefix__number" width="39" height="19.5" viewBox="0 0 39 19.5">
+    <defs>
+        <style>
+            .prefix__cls-1{fill:#adadad}
+        </style>
+    </defs>
+    <path id="prefix__Path_806" d="M37.05 0H1.95A1.915 1.915 0 0 0 0 1.95v15.6a1.915 1.915 0 0 0 1.95 1.95h35.1A1.915 1.915 0 0 0 39 17.55V1.95A1.915 1.915 0 0 0 37.05 0zM24.7 18.2H1.95a.614.614 0 0 1-.65-.65V1.95a.614.614 0 0 1 .65-.65h10.4v3.9H10.4v1.3h5.2V5.2h-1.95V1.3H24.7zm13-.65a.614.614 0 0 1-.65.65H26v-7.8h11.7zm0-8.45H26V1.3h11.05a.614.614 0 0 1 .65.65zm0 0" class="prefix__cls-1" data-name="Path 806"/>
+    <path id="prefix__Path_807" d="M363.25 32h-1.3v1.95H360v1.3h1.95v1.95h1.3v-1.95h1.95v-1.3h-1.95zm0 0" class="prefix__cls-1" data-name="Path 807" transform="translate(-330.75 -29.4)"/>
+    <path id="prefix__Path_808" d="M360 168h5.2v1.3H360zm0 0" class="prefix__cls-1" data-name="Path 808" transform="translate(-330.75 -154.35)"/>
+    <path id="prefix__Path_809" d="M128 113.3h3.9v1.95H128v4.55h5.2v-1.3h-3.9v-1.95h3.9V112H128zm0 0" class="prefix__cls-1" data-name="Path 809" transform="translate(-117.6 -102.9)"/>
+</svg>
