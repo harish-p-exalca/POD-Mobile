@@ -21,20 +21,14 @@ const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full'
   },
-  
   {
-    path: 'invoice/:user_data/:selected_id',
+    path: 'invoice/:user_data',
     loadChildren: () => import('./invoice/invoice.module').then( m => m.InvoicePageModule),
-    
-    
-    
     canActivate :[AuthGuard]
-    
   },
   {
     path: 'charts/:user_data',
     loadChildren: () => import('./charts/charts.module').then( m => m.ChartsPageModule),
-    
     resolve:{ delivery:DeliveryResolver},
     canActivate :[AuthGuard]
     
@@ -42,7 +36,6 @@ const routes: Routes = [
   {
     path: 'description/:user_data/:header_id/:type',
     loadChildren: () => import('./description/description.module').then( m => m.DescriptionPageModule),
-    
     resolve:{descrptn:InvoiceDescriptionResolver},
     canActivate :[AuthGuard]
   },
@@ -50,7 +43,10 @@ const routes: Routes = [
     path: 'on-time-and-late-invs/:user_data/:selected_id',
     loadChildren: () => import('./on-time-and-late-invs/on-time-and-late-invs.module').then( m => m.OnTimeAndLateInvsPageModule),
     canActivate:[AuthGuard]
-
+  },
+  {
+    path: 'pdf-view/:doc_data',
+    loadChildren: () => import('./pdf-view/pdf-view.module').then( m => m.PdfViewPageModule)
   }
 
 ];

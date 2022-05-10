@@ -147,6 +147,13 @@
     color: #1d1d1d;
 }
 
+#view {
+    border-radius: 5px;
+    border: solid 2px #4452c6;
+    justify-content: center;
+    padding: 8px;
+}
+
 
 .invoice_item_details{
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -222,7 +229,7 @@ thead{
 }
 td{
     text-align: center;
-    
+    min-width: 80px;
 }
 th{
     padding-top:2.5%;
@@ -240,9 +247,9 @@ mat-cell{
     margin-top: 2%;
     margin-bottom: 2%;  
 }
-table{
-    width:400px;
-}
+// table{
+//     // width:400px;
+// }
 
 .disablesave{
     width: 90px;

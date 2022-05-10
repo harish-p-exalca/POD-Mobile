@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{docData?.AttachmentName}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  
+  <pdf-viewer [rotation]="rotation" [original-size]="true" [autoresize]="true" [fit-to-page]="true" [zoom-scale]="'page-width'" [zoom]="zoom" [src]="LoadResourceURL()" [render-text]="true" style="display: block;"></pdf-viewer>
+
+</ion-content>  
+<ion-footer>
+  <div class="footer">
+    <ion-icon name="remove-circle-outline" (click)="zoomOut()"></ion-icon>
+    <ion-icon name="add-circle-outline" (click)="zoomIn()"></ion-icon>
+    <ion-icon name="reload-outline" (click)="rotateDoc()"></ion-icon>
+    <ion-icon name="arrow-down-circle-outline" (click)="LocalDownload()"></ion-icon>
+  </div>
+</ion-footer>

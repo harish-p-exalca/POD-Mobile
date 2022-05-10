@@ -17,6 +17,8 @@ import { PlatformLocation } from '@angular/common';
 import {AppAvailability} from  '@ionic-native/app-availability';
 import {InAppBrowser}  from '@ionic-native/in-app-browser';
 import {Device} from '@ionic-native/device';
+import { SharedParameterService } from './services/shared-parameter.service';
+import { FilterClass } from './models/FilterParam.model';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -40,7 +42,8 @@ export class AppComponent implements OnInit {
     private toast:ToastMaker,
     private loading:LoadingAnimation,
     private location:PlatformLocation,
-    private modalController:ModalController
+    private modalController:ModalController,
+    private sharedService:SharedParameterService
    
     
   ) {
@@ -165,22 +168,16 @@ export class AppComponent implements OnInit {
   onclickInvoice(){ 
     this.loading.presentLoading().then(()=>{
       try {
-        this.router.navigate(['/invoice' , JSON.stringify(this.userdetails),0]).then(()=>{
+        this.sharedService.IsInvoiceFilterData=false;
+        this.sharedService.SetChartFilterData(new FilterClass());
+        this.router.navigate(['/invoice' , JSON.stringify(this.userdetails)]).then(()=>{
           this.loadingController.dismiss();
-        })
-         
-          
-      
+        });
       } catch (error) {
         this.loadingController.dismiss();
         this.toast.wentWrong();
-      }
-     
-       
-    })
-    
-    
-     
+      } 
+    });  
   }
 
 

@@ -8,8 +8,8 @@ import { take, mergeMap, catchError, filter, withLatestFrom } from 'rxjs/operato
 import { InvoiceStatusCount } from '../models/InvoiceStatusCount.model';
 import { TokenResponse } from '../models/TokenResponse.model';
 import { DeliveryCount } from '../models/DeliveryCount.model';
-import { FilterClass } from '../models/FilterClass.model';
 import { Guid } from "guid-typescript";
+import { FilterClass } from '../models/FilterParam.model';
 @Injectable({
     providedIn:"root"
 })

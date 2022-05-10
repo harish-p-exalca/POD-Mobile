@@ -8,6 +8,7 @@ import { ChartsPageRoutingModule } from './charts-routing.module';
 import {ChartsModule} from 'ng2-charts';
 import { ChartsPage } from './charts.page';
 import { AuthGuardService } from '../services/AuthGuardService.service';
+import { MaterialModule } from '../material/material.module';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { AuthGuardService } from '../services/AuthGuardService.service';
     IonicModule,
     ChartsModule,
     FlexLayoutModule,
-    ChartsPageRoutingModule
+    ChartsPageRoutingModule,
+    MaterialModule
   ],
   declarations: [ChartsPage]
 })

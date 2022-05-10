@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { forkJoin, Observable } from 'rxjs';
-import { FilterClass } from '../models/FilterClass.model';
+import { FilterClass } from '../models/FilterParam.model';
 import { TokenResponse } from '../models/TokenResponse.model';
 import { GetService } from './getservice.service';
 

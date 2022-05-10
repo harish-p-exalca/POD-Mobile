@@ -19,6 +19,7 @@ import { AuthGuardService } from '../services/AuthGuardService.service';
     DescriptionPageRoutingModule,
     MaterialModule
   ],
-  declarations: [DescriptionPage]
+  declarations: [DescriptionPage],
+  providers:[]
 })
 export class DescriptionPageModule {}

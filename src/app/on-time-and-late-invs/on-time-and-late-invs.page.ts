@@ -4,7 +4,7 @@ import { AlertController, IonSlides, MenuController, PopoverController, IonConte
 import { forkJoin, Observable } from 'rxjs';
 import { LateAndOnTimeFilterComponent } from '../late-and-on-time-filter/late-and-on-time-filter.component';
 import { LoadingAnimation } from '../LoadingAnimation/LoadingAnimation.service';
-import { FilterClass } from '../models/FilterClass.model';
+import { FilterClass } from '../models/FilterParam.model';
 import { FilterDataForOnTimeAndLate } from '../models/FilterDataForOnTimeAndLate.model';
 import { InvoiceHeaderDetail } from '../models/InvoiceHeaderDetail.model';
 import { PlantStructure } from '../models/PlantStruct.model';
@@ -13,6 +13,11 @@ import { PopoverComponent } from '../popover/popover.component';
 import { DataService } from '../services/BehaviourSubject.service';
 import { GetService } from '../services/getservice.service';
 import { ToastMaker } from '../Toast/ToastMaker.service';
+import { SharedParameterService } from '../services/shared-parameter.service';
+import { FilterComponent } from '../filter/filter.component';
+import { Guid } from 'guid-typescript';
+import { Organization } from '../models/Organization.model';
+import { CustomerGroup } from '../models/CustomerGroup.model';
 @Component({
   selector: 'app-on-time-and-late-invs',
   templateUrl: './on-time-and-late-invs.page.html',
@@ -26,356 +31,122 @@ export class OnTimeAndLateInvsPage implements OnInit {
   segment: number = 1;
   OnTimeInvoices: InvoiceHeaderDetail[];
   LateInvoices: InvoiceHeaderDetail[];
-  FilterOnTimeInv:InvoiceHeaderDetail[];
-  FilterLateInv:InvoiceHeaderDetail[];
-  AmFliterObj:FilterClass;
-  InitFliterObj:FilterClass = new FilterClass();
-  filterdata:any;
-  switchFlag:boolean = false; 
-  pgno=1;
-  cpgno=1;
-  constructor(private activatedRoute: ActivatedRoute,private modalCtrl:ModalController ,public popoverCtrl: PopoverController,private dataservice: DataService,private getservice:GetService ,private loadingController: LoadingController, private toast: ToastMaker, private loading: LoadingAnimation,private router: Router) {
-    
-   }
+  FilterOnTimeInv: InvoiceHeaderDetail[];
+  FilterLateInv: InvoiceHeaderDetail[];
+  AllCustomerGroups: CustomerGroup[] = [];
+  AmFliterObj: FilterClass;
+  InitFliterObj: FilterClass = new FilterClass();
+  filterdata: any;
+  switchFlag: boolean = false;
+  pgno = 1;
+  cpgno = 1;
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private modalCtrl: ModalController,
+    public popoverCtrl: PopoverController,
+    private dataservice: DataService,
+    private getservice: GetService,
+    private loadingController: LoadingController,
+    private toast: ToastMaker,
+    private loading: LoadingAnimation,
+    private router: Router,
+    private sharedParam: SharedParameterService
+  ) {
+
+  }
 
   ngOnInit() {
     this.userdetails = JSON.parse(this.activatedRoute.snapshot.paramMap.get('user_data'));
     this.segment = parseInt(this.activatedRoute.snapshot.paramMap.get('selected_id'));
     this.dataservice.SignedInUser(this.userdetails);
+    this.segmentChanged(null);
+    this.slideChanged();
+    this.getFilteredInvoices(this.sharedParam.GetChartFilterData());
+    if (this.userdetails.userRole == "Amararaja User") {
+      this.getAllCustomerGroups(Guid.parse(this.userdetails.userID))
+    }
+  }
+
+  getAllCustomerGroups(Userid: Guid) {
+    this.getservice.GetAllCustomerGroupsByUserID(Userid).subscribe((data: CustomerGroup[]) => {
+      this.AllCustomerGroups = data;
+    });
+  }
+
+  ionViewWillEnter(){
+    
+  }
+
+  getFilteredInvoices(filterClass: FilterClass) {
+    filterClass.LeadTime=[];
+    filterClass.Status=[];
+    if (this.segment == 0) {
+      filterClass.Status = [];
+      filterClass.Delivery = ["late"]
+    }
+    else if (this.segment == 1) {
+      filterClass.Status = [];
+      filterClass.Delivery = ["ontime"]
+    }
+    filterClass.UserCode = this.userdetails.userCode;
+    filterClass.UserID = this.userdetails.userID;
+    filterClass.CurrentPage = 1;
+    filterClass.Records = 10;
     this.loading.presentLoading().then(async () => {
-
-      this.getInitialInvoices().subscribe((x:any) => {
-        this.pgno = 1;
-    this.cpgno = 1;
-        this.OnTimeInvoices = x[0];
-        this.FilterOnTimeInv= x[0];
-        console.log(this.OnTimeInvoices);
-
-        this.LateInvoices = x[1];
-        this.FilterLateInv = x[1];
-        console.log(this.LateInvoices);
-
-        this.segmentChanged(null);
-        this.slideChanged();
-
+      this.getservice.FilterInvoiceData(filterClass, this.userdetails.userRole).subscribe(data => {
+        console.log("filtered data", data);
+        if (this.segment == 0) {
+          this.FilterLateInv = data;
+        }
+        else if (this.segment == 1) {
+          this.FilterOnTimeInv = data;
+        }
         this.loadingController.getTop().then((has) => {
           if (has) {
-            this.loadingController.dismiss();
+            this.closeLoader();
           }
-        })
-
-
-
-
-
-
-
-
-
-
+        });
       },
         (catchError) => {
-
-
           this.loadingController.getTop().then((has) => {
             if (has) {
-              this.loadingController.dismiss();
+              this.closeLoader();
             }
-          })
-
-
+          });
           if (catchError.status == 0) {
-
             this.toast.internetConnection();
-
-
           }
           else {
             this.toast.wentWrong();
-
-
           }
-
-        })
-
-    })
-  }
-
-  getInitialInvoices():Observable<any>{
-    this.InitFliterObj.CurrentPage = 1;
-    this.InitFliterObj.Records = 10;
-    this.InitFliterObj.UserID = this.userdetails.userID;
-    this.InitFliterObj.StartDate = null;
-    this.InitFliterObj.EndDate =null;
-    this.InitFliterObj.Organization =[];
-    this.InitFliterObj.Division =[];
-    this.InitFliterObj.PlantList =[];
-    this.InitFliterObj.CustomerGroup =[];
-     
-     
-    return this.userdetails.userRole!="Customer"? forkJoin([this.getservice.getOnTimeInvoicesforAMuser(this.InitFliterObj),this.getservice.getLateInvoicesforAMuser(this.InitFliterObj)]):forkJoin([this.getservice.getOnTimeDeliveryInvoices(this.userdetails.userCode,this.userdetails.userID,this.userdetails.userRole,"","","","",1,(10).toString()),this.getservice.getLateDeliveryInvoices(this.userdetails.userCode,this.userdetails.userID,this.userdetails.userRole,"","","","",1,(10).toString())])
-  }
-  loadMoreInvoices(event){
-if(this.switchFlag){
-  this.pgno++;
-this.flterInvcsLoadmore(event);
-}
-else{
-  this.pgno++;
-  console.log(this.pgno);
-  
-  this.cpgno = this.pgno;
-  
-  
-  if(this.userdetails.userRole!="Customer"){
-    this.AmFliterObj = new  FilterClass();
-    this.AmFliterObj.CurrentPage = this.pgno;
-    this.AmFliterObj.Records = 10;
-    this.AmFliterObj.UserID = this.userdetails.userID;
-    this.AmFliterObj.StartDate = null;
-    this.AmFliterObj.EndDate =null;
-    this.AmFliterObj.Organization =[];
-    this.AmFliterObj.Division =[];
-    this.AmFliterObj.PlantList =[];
-    this.AmFliterObj.CustomerGroup =[];
-    forkJoin([this.getservice.getOnTimeInvoicesforAMuser(this.AmFliterObj),this.getservice.getLateInvoicesforAMuser(this.AmFliterObj)]).subscribe((x)=>{
-     console.log(x);
-     
-      if(x[0]!=null){
-      this.FilterOnTimeInv.push(...x[0]);
-      this.OnTimeInvoices = this.FilterOnTimeInv;
-      }
-      if(x[1]!=null){
-      this.FilterLateInv.push(...x[1]);
-      this.LateInvoices = this.FilterLateInv;
-      }
-      if(event){
-        event.target.complete();
-      }
-    })
-  }
-
-  else{
-    forkJoin([this.getservice.getOnTimeDeliveryInvoices(this.userdetails.userCode,this.userdetails.userID,this.userdetails.userRole,"","","","",this.pgno,(10).toString()),this.getservice.getLateDeliveryInvoices(this.userdetails.userCode,this.userdetails.userID,this.userdetails.userRole,"","","","",this.pgno,(10).toString())]).subscribe((x)=>{
-      if(x[0]!=null){
-        this.FilterOnTimeInv.push(...x[0]);
-        this.OnTimeInvoices = this.FilterOnTimeInv;
-      }
-      if(x[1]!=null){
-        this.FilterLateInv.push(...x[1]);
-        this.FilterLateInv = this.LateInvoices;
-      }
-      if(event){
-        event.target.complete();
-      }
-    })
-  }
- 
-}
-  }
-
-  flterInvcsLoadmore(event?:any){
-    
-      
-         if(this.filterdata!=undefined){
-           if(this.segment==0){
-          if(this.userdetails.userRole!="Customer"){
-            this.AmFliterObj = new FilterClass();
-            this.AmFliterObj.CurrentPage = this.pgno;
-            
-      this.AmFliterObj.Records = 50;
-      this.AmFliterObj.UserID = this.userdetails.userID;
-      this.AmFliterObj.StartDate = this.filterdata.st_date;
-      this.AmFliterObj.EndDate =this.filterdata.end_date;
-      this.AmFliterObj.Organization =this.filterdata.organization;
-      this.AmFliterObj.Division =this.filterdata.division;
-      this.AmFliterObj.PlantList =this.filterdata.plant!=null?this.filterdata.plant:[];
-      this.AmFliterObj.CustomerGroup = [];
-           this.getservice.getLateInvoicesforAMuser(this.AmFliterObj).subscribe((u:InvoiceHeaderDetail[])=>{
-             console.log("this",u);
-             
-             if(u.length!=0){
-              this.FilterLateInv=u
-             }
-             
-             if(event){
-              event.target.complete();
-            }
-           },
-           
-            (catchError) => {
-    
-    
-             
-              if(event){
-                event.target.complete();
-              }
-    
-              if (catchError.status == 0) {
-    
-                this.toast.internetConnection();
-    
-    
-              }
-              else {
-                this.toast.wentWrong();
-    
-    
-              }
-    
-            })
-          }
-          else{
-            this.getservice.getLateDeliveryInvoices(this.userdetails.userCode,this.userdetails.userID,this.userdetails.userRole,this.filterdata.st_date,this.filterdata.end_date,this.filterdata.division,this.filterdata.organization,this.pgno,(50).toString()).subscribe((x:InvoiceHeaderDetail[])=>{
-             if(x.length!=0){
-              this.FilterLateInv =x;
-             }
-              console.log(this.FilterLateInv);
-              if(event){
-                event.target.complete();
-              }
-              
-            },
-            (catchError) => {
-    
-    
-             
-              if(event){
-                event.target.complete();
-              }
-    
-              if (catchError.status == 0) {
-    
-                this.toast.internetConnection();
-    
-    
-              }
-              else {
-                this.toast.wentWrong();
-    
-    
-              }
-    
-            })
-          }
-           }
-           else{
-             if(this.userdetails.userRole!='Customer'){
-               this.AmFliterObj = new FilterClass();
-              this.AmFliterObj.CurrentPage = this.pgno;
-              
-        this.AmFliterObj.Records = 50;
-        this.AmFliterObj.UserID = this.userdetails.userID;
-        this.AmFliterObj.StartDate = this.filterdata.st_date;
-        this.AmFliterObj.EndDate =this.filterdata.end_date;
-        this.AmFliterObj.Organization =this.filterdata.organization;
-        this.AmFliterObj.Division =this.filterdata.division;
-        this.AmFliterObj.PlantList =this.filterdata.plant!=null?this.filterdata.plant:[];
-        this.AmFliterObj.CustomerGroup = [];
-             this.getservice.getOnTimeInvoicesforAMuser(this.AmFliterObj).subscribe((u:InvoiceHeaderDetail[])=>{
-               if(u.length!=0){
-                this.FilterOnTimeInv=u
-               }
-               
-               if(event){
-                event.target.complete();
-              }
-             },
-             
-              (catchError) => {
-      
-      
-               
-      
-      
-                if (catchError.status == 0) {
-      
-                  this.toast.internetConnection();
-      
-      
-                }
-                else {
-                  this.toast.wentWrong();
-      
-      
-                }
-      
-              })
-             }
-             else{
-              this.getservice.getOnTimeDeliveryInvoices(this.userdetails.userCode,this.userdetails.userID,this.userdetails.userRole,this.filterdata.st_date,this.filterdata.end_date,this.filterdata.division,this.filterdata.organization,this.pgno,(50).toString()).subscribe((x:InvoiceHeaderDetail[])=>{
-                if(x.length!=0){
-                  this.FilterOnTimeInv =x;
-                }
-                console.log(this.FilterOnTimeInv);
-                
-               
-              },
-              (catchError) => {
-      
-      
-               
-      
-                if (catchError.status == 0) {
-      
-                  this.toast.internetConnection();
-      
-      
-                }
-                else {
-                  this.toast.wentWrong();
-      
-      
-                }
-      
-              })
-             }
-           
-           }
-         }
-         else{
-          
-           this.FilterLateInv=this.LateInvoices;
-           this.FilterOnTimeInv = this.OnTimeInvoices;
-         }
-      
-  
-    
-  
+        });
+    });
   }
 
   async segmentChanged(ev: any) {
     await this.slider.slideTo(this.segment);
     this.pageTop.scrollToTop();
-    // if(this.segment==0){
-    //  this.hidesearchstatus="no";
-    // }else{
-    //   this.hidesearchstatus="yes";
-    // }
-    
-    
+    var filterData = this.sharedParam.GetChartFilterData();
+    this.getFilteredInvoices(filterData);
   }
   async slideChanged() {
     this.segment = await this.slider.getActiveIndex();
   }
 
   onClicknavigate(x, y: string) {
-    this.loading.presentLoading().then(()=>{
+    this.loading.presentLoading().then(() => {
       try {
-        
-          this.router.navigate(['/description', JSON.stringify(this.userdetails), JSON.stringify(x), y]).then(()=>{
-            this.loading.loadingController.dismiss();
-          })
-          
+
+        this.router.navigate(['/description', JSON.stringify(this.userdetails), JSON.stringify(x), y]).then(() => {
+          this.loading.loadingController.dismiss();
+        });
+
       } catch (error) {
-        this.loading.loadingController.dismiss().then(()=>{
+        this.loading.loadingController.dismiss().then(() => {
           this.toast.wentWrong()
-        })
+        });
       }
-    })
-        
-      
-   
+    });
 
   }
 
@@ -392,202 +163,66 @@ else{
   }
 
 
-   onClickFilterModal(){
-    this.getservice.getPlantList().subscribe(async (g:PlantStructure[])=>{
-      const filterModal = await this.modalCtrl.create({
-        component:LateAndOnTimeFilterComponent,
-        cssClass:"filter-ontimeandlate-modal",
-        componentProps:{
-          'usr_role':this.userdetails.userRole,
-         
-          'segment':this.segment,
-          'plantlist':g
-        }
-      })
-      await filterModal.present();
-      const {data} = await filterModal.onWillDismiss();
-      this.filterdata=data as FilterDataForOnTimeAndLate;
-        console.log(this.filterdata);
-        
-     this.loading.presentLoading().then(() => {
-      try {
-         if(this.filterdata!=undefined){
-           this.switchFlag = true;
-           this.pgno = 1;
-           if(this.segment==0){
-          if(this.userdetails.userRole!="Customer"){
-            this.AmFliterObj = new FilterClass();
-            this.AmFliterObj.CurrentPage = this.pgno;
-            
-      this.AmFliterObj.Records = 50;
-      this.AmFliterObj.UserID = this.userdetails.userID;
-      this.AmFliterObj.StartDate = this.filterdata.st_date;
-      this.AmFliterObj.EndDate =this.filterdata.end_date;
-      this.AmFliterObj.Organization =this.filterdata.organization;
-      this.AmFliterObj.Division =this.filterdata.division;
-      this.AmFliterObj.PlantList =this.filterdata.plant!=null?this.filterdata.plant:[];
-      this.AmFliterObj.CustomerGroup = [];
-           this.getservice.getLateInvoicesforAMuser(this.AmFliterObj).subscribe(u=>{
-             console.log(u);
-             
-             this.FilterLateInv=u
-             this.loadingController.dismiss();
-           },
-           
-            (catchError) => {
-    
-    
-              this.loadingController.getTop().then((has) => {
-                if (has) {
-                  this.loadingController.dismiss();
-                }
-              })
-    
-    
-              if (catchError.status == 0) {
-    
-                this.toast.internetConnection();
-    
-    
+  async onClickFilterModal() {
+    await this.loading.presentLoading();
+    this.getservice.getPlantList().subscribe((g: PlantStructure[]) => {
+      this.getservice.getAllOrganizations(Guid.parse(this.userdetails.userID)).subscribe((org: Organization[]) => {
+        this.getservice.getAllDivisions().subscribe(async (divs: string[]) => {
+          // this.AllOrganizations = org;
+          const filterModal = await this.modalCtrl.create({
+            component: FilterComponent,
+            cssClass: this.userdetails.userRole == "Customer" ? "filter-modal-Customer" : "filter-modal",
+            componentProps: {
+              'usr_role': this.userdetails.userRole,
+              'hide_status': true,
+              'segment': this.segment,
+              'PlantList': g,
+              'OrganizationList': org,
+              'Divisions': divs,
+              'CustomerGroups': this.AllCustomerGroups,
+              'isFromCharts': false,
+              'filterData': this.sharedParam.GetChartFilterData()
+            }
+          });
+          await filterModal.present();
+          const { data } = await filterModal.onWillDismiss();
+          this.filterdata = data
+          this.loading.presentLoading().then(() => {
+            try {
+              if (this.filterdata != null) {
+                this.getFilteredInvoices(this.filterdata);
+                this.closeLoader();
               }
               else {
-                this.toast.wentWrong();
-    
-    
+                this.closeLoader();
               }
+            } catch (error) {
+              this.closeLoader();
+            }
+          });
+        });
+      });
+    });
+  }
+  async closeLoader() {
+    // Instead of directly closing the loader like below line
+    // return await this.loadingController.dismiss();
+	
+    this.checkAndCloseLoader();
+	
+	// sometimes there's delay in finding the loader. so check if the loader is closed after one second. if not closed proceed to close again
+    setTimeout(() => this.checkAndCloseLoader(), 1000);
     
-            })
-          }
-          else{
-            this.getservice.getLateDeliveryInvoices(this.userdetails.userCode,this.userdetails.userID,this.userdetails.userRole,this.filterdata.st_date,this.filterdata.end_date,this.filterdata.division,this.filterdata.organization,1,(50).toString()).subscribe((x:InvoiceHeaderDetail[])=>{
-              this.FilterLateInv =x;
-              console.log(this.FilterLateInv);
-              
-              this.loadingController.dismiss();
-            },
-            (catchError) => {
-    
-    
-              this.loadingController.getTop().then((has) => {
-                if (has) {
-                  this.loadingController.dismiss();
-                }
-              })
-    
-    
-              if (catchError.status == 0) {
-    
-                this.toast.internetConnection();
-    
-    
-              }
-              else {
-                this.toast.wentWrong();
-    
-    
-              }
-    
-            })
-          }
-           }
-           else{
-             if(this.userdetails.userRole!='Customer'){
-               this.AmFliterObj = new FilterClass();
-              this.AmFliterObj.CurrentPage = 1;
-              
-        this.AmFliterObj.Records = 50;
-        this.AmFliterObj.UserID = this.userdetails.userID;
-        this.AmFliterObj.StartDate = this.filterdata.st_date;
-        this.AmFliterObj.EndDate =this.filterdata.end_date;
-        this.AmFliterObj.Organization =this.filterdata.organization;
-        this.AmFliterObj.Division =this.filterdata.division;
-        this.AmFliterObj.PlantList =this.filterdata.plant!=null?this.filterdata.plant:[];
-        this.AmFliterObj.CustomerGroup =[];
-             this.getservice.getOnTimeInvoicesforAMuser(this.AmFliterObj).subscribe(u=>{
-               this.FilterOnTimeInv=u
-               this.loadingController.dismiss();
-             },
-             
-              (catchError) => {
-      
-      
-                this.loadingController.getTop().then((has) => {
-                  if (has) {
-                    this.loadingController.dismiss();
-                  }
-                })
-      
-      
-                if (catchError.status == 0) {
-      
-                  this.toast.internetConnection();
-      
-      
-                }
-                else {
-                  this.toast.wentWrong();
-      
-      
-                }
-      
-              })
-             }
-             else{
-              this.getservice.getOnTimeDeliveryInvoices(this.userdetails.userCode,this.userdetails.userID,this.userdetails.userRole,this.filterdata.st_date,this.filterdata.end_date,this.filterdata.division,this.filterdata.organization,1,(50).toString()).subscribe((x:InvoiceHeaderDetail[])=>{
-                this.FilterOnTimeInv =x;
-                console.log(this.FilterOnTimeInv);
-                
-                this.loadingController.dismiss();
-              },
-              (catchError) => {
-      
-      
-                this.loadingController.getTop().then((has) => {
-                  if (has) {
-                    this.loadingController.dismiss();
-                  }
-                })
-      
-      
-                if (catchError.status == 0) {
-      
-                  this.toast.internetConnection();
-      
-      
-                }
-                else {
-                  this.toast.wentWrong();
-      
-      
-                }
-      
-              })
-             }
-           
-           }
-         }
-         else{
-           this.switchFlag = false;
-           this.pgno = this.cpgno;
-          this.loadingController.dismiss();
-           this.FilterLateInv=this.LateInvoices;
-           this.FilterOnTimeInv = this.OnTimeInvoices;
-         }
-      } catch (error) {
-        
-       this.loadingController.dismiss()
-       
-      }
-  
-    }
-  
-  
-  
-    )
-    })
-   
   }
 
+  async checkAndCloseLoader() {
+   // Use getTop function to find the loader and dismiss only if loader is present.
+   const loader = await this.loadingController.getTop();
+   // if loader present then dismiss
+    if(loader !== undefined) { 
+      await this.loadingController.dismiss();
+    }
+  }
 }
 
 

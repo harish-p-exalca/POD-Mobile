@@ -30,9 +30,12 @@ import {File} from '@ionic-native/file/ngx'
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { Base64 } from '@ionic-native/base64/ngx';
 import { FilterCustomerGroupsPipe } from './services/FilterCustomerGroupPipe.service';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { CustomControlsPlantComponent } from './custom-controls/custom-controls-plant/custom-controls-plant.component';
+import { SearchableMultiSelectComponent } from './custom-controls/searchable-multi-select/searchable-multi-select.component';
 
 @NgModule({
-  declarations: [AppComponent,PendingdailogComponent,DescriptiondailogComponent,PopoverComponent,ChangePasswordComponent,ForgotPasswordComponent,ForgotPasswordOTPComponent],
+  declarations: [AppComponent,PendingdailogComponent,DescriptiondailogComponent,PopoverComponent,ChangePasswordComponent,ForgotPasswordComponent,ForgotPasswordOTPComponent,CustomControlsPlantComponent,SearchableMultiSelectComponent],
   entryComponents: [PendingdailogComponent,DescriptiondailogComponent,PopoverComponent,ChangePasswordComponent,ForgotPasswordComponent,ForgotPasswordOTPComponent],
   imports: [BrowserModule, MaterialModule,ReactiveFormsModule,FormsModule,IonicModule.forRoot(),AppRoutingModule,FlexLayoutModule,HttpClientModule,ChartsModule, BrowserAnimationsModule],
   providers: [
@@ -45,7 +48,8 @@ import { FilterCustomerGroupsPipe } from './services/FilterCustomerGroupPipe.ser
     WebView,
     File,
     Base64,
-    { provide: RouteReuseStrategy,useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy,useClass: IonicRouteStrategy },
+    {provide: MAT_DATE_LOCALE, useValue: 'en-IN'}
   ],
   bootstrap: [AppComponent]
 })

@@ -19,6 +19,8 @@ import { ForgotPasswordOtpModalComponent } from '../forgot-password-otp-modal/fo
 import { ForgotPasswordRequest } from '../models/ForgotPasswordRequest.model';
 import { OTPResponseBody } from '../models/OTPResponseBody.model';
 import { environment } from 'src/environments/environment';
+import { SharedParameterService } from '../services/shared-parameter.service';
+import { FilterClass } from '../models/FilterParam.model';
 
 
 @Component({
@@ -28,31 +30,40 @@ import { environment } from 'src/environments/environment';
 })
 export class HomePage implements OnInit {
 
-  appVersion:string=environment.buildVersion;
+  appVersion: string = environment.buildVersion;
   fieldTextType = false;
-  target_email:string="";
-  forgotpasswordparams:ForgotPasswordRequest = new ForgotPasswordRequest();
+  target_email: string = "";
+  forgotpasswordparams: ForgotPasswordRequest = new ForgotPasswordRequest();
   response_data: TokenResponse = new TokenResponse();
   reactive_signin = new FormGroup({
     username: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required)
 
   });
-  constructor(private router: Router, private alrtctrl:AlertController,private modalController:ModalController,private dialog: MatDialog,private platform:Platform,private loading:LoadingAnimation ,private toast:ToastMaker,public loadingController: LoadingController, private dataservice: DataService, private getService: GetService, public menuCtrl: MenuController, private storage: StorageService) {
-    this.dataservice.SignedInUser(this.response_data)
-    
-    
-    
-   
-    
+  constructor(private router: Router,
+    private alrtctrl: AlertController,
+    private modalController: ModalController,
+    private dialog: MatDialog,
+    private platform: Platform,
+    private loading: LoadingAnimation,
+    private toast: ToastMaker,
+    public loadingController: LoadingController,
+    private dataservice: DataService,
+    private getService: GetService,
+    public menuCtrl: MenuController,
+    private storage: StorageService,
+    private sharedService: SharedParameterService
+  ) {
+    this.dataservice.SignedInUser(this.response_data);
   }
   ngOnInit(): void {
-    
+
   }
-  
+
   ionViewWillEnter() {
     this.menuCtrl.enable(false);
-   }
+    this.sharedService.SetChartFilterData(new FilterClass());
+  }
   // onClickForgotPassword(){
   //  const forgotpasswordConfig=new MatDialogConfig();
   //  forgotpasswordConfig.autoFocus=true;
@@ -61,8 +72,8 @@ export class HomePage implements OnInit {
   //  const forgotpasswordOTP = new MatDialogConfig();
   //  forgotpasswordOTP.autoFocus=true;
   //  forgotpasswordOTP.hasBackdrop =true;
-   
-   
+
+
   // const emailformComp  = this.dialog.open(ForgotPasswordComponent,forgotpasswordConfig);
   //  emailformComp.afterClosed().subscribe((z:any)=>{
   //    forgotpasswordOTP.data={
@@ -75,22 +86,22 @@ export class HomePage implements OnInit {
   //         this.loading.loadingController.dismiss().then(()=>{
   //           this.dialog.open(ForgotPasswordOTPComponent,forgotpasswordOTP)  
   //         })
-          
+
   //        },
-            
+
   //             catchError => {
   //               this.loadingController.dismiss();
   //               console.log(catchError);
-                
-                
+
+
   //               if(catchError.status==0){
-                  
+
   //                 this.toast.internetConnection();
   //               }
   //               else if(catchError.status==400){
   //                 this.toast.wentWrong();
   //               }
-                
+
   //             }
   //        )
   //     }
@@ -98,48 +109,48 @@ export class HomePage implements OnInit {
   //       this.loadingController.dismiss();
   //     }
   //    })
-     
-     
-     
+
+
+
   //  })
   // }
 
   onClickSubmit() {
     this.loading.presentLoading().then(() => {
-     
+
       let temp = "username=" + this.reactive_signin.get('username').value + "&password=" + this.reactive_signin.get('password').value + "&grant_type=password";
 
       if (this.reactive_signin.valid) {
         this.getService.loginResponse(temp).subscribe((data: any) => {
           this.response_data = data;
-          
 
-         
+
+
           this.storage.setObject('signedUser', this.response_data);
-          
+
           this.dataservice.SignedInUser(this.response_data);
-          
-          this.router.navigate(['charts',JSON.stringify(this.response_data)]).then(()=>{
+
+          this.router.navigate(['charts', JSON.stringify(this.response_data)]).then(() => {
             this.loadingController.dismiss()
           })
-            this.toast.loginsuccess();
-          
-          
+          this.toast.loginsuccess();
+
+
         },
-        
+
           catchError => {
             this.loadingController.dismiss();
-            console.log(catchError );
-            
-            
-            if(catchError.status==0){
-              
+            console.log(catchError);
+
+
+            if (catchError.status == 0) {
+
               this.toast.internetConnection();
             }
-            else if(catchError.status==400){
+            else if (catchError.status == 400) {
               this.toast.incorrectCredentials();
             }
-            
+
           }
 
         )
@@ -154,71 +165,71 @@ export class HomePage implements OnInit {
 
   }
 
- async onlclickForgotPasswordModal(){
-     const modal = await this.modalController.create({
-       component:ForgotPasswordModalComponent,
-       cssClass:"forgot-password-modal"
-     })
+  async onlclickForgotPasswordModal() {
+    const modal = await this.modalController.create({
+      component: ForgotPasswordModalComponent,
+      cssClass: "forgot-password-modal"
+    })
     await modal.present();
-      modal.onDidDismiss().then((data :any)=>{
-       console.log(data['data']);
-       
-      this.forgotpasswordparams=data['data'].req as ForgotPasswordRequest;
-      this.loading.presentLoading().then(()=>{
-       
-      if(this.forgotpasswordparams.mode =="email"){
-        this.getService.sendEmailforOTP(this.forgotpasswordparams.UserName).subscribe((x:any)=>{
-          this.loading.loadingController.dismiss().then(()=>{
-            this.onlclickOTPModal();
-          })
-          
-         },
-            
-              catchError => {
-                this.loadingController.dismiss();
-                console.log(catchError);
-                
-                
-                if(catchError.status==0){
-                  
-                  this.toast.internetConnection();
-                }
-                else if(catchError.status==400){
-                  this.toast.wentWrong();
-                }
-                
+    modal.onDidDismiss().then((data: any) => {
+      console.log(data['data']);
+
+      this.forgotpasswordparams = data['data'].req as ForgotPasswordRequest;
+      this.loading.presentLoading().then(() => {
+
+        if (this.forgotpasswordparams.mode == "email") {
+          this.getService.sendEmailforOTP(this.forgotpasswordparams.UserName).subscribe((x: any) => {
+            this.loading.loadingController.dismiss().then(() => {
+              this.onlclickOTPModal();
+            })
+
+          },
+
+            catchError => {
+              this.loadingController.dismiss();
+              console.log(catchError);
+
+
+              if (catchError.status == 0) {
+
+                this.toast.internetConnection();
               }
-         )
-      }
-      else if(this.forgotpasswordparams.mode =="phone"){
-        this.getService.sendSMSforOTP({"UserName":this.forgotpasswordparams.UserName}).subscribe((h:OTPResponseBody | string)=>{
-          this.loadingController.dismiss().then(()=>{
-            console.log(h.valueOf());
-            this.onlclickOTPModal(h.valueOf());
+              else if (catchError.status == 400) {
+                this.toast.wentWrong();
+              }
+
+            }
+          )
+        }
+        else if (this.forgotpasswordparams.mode == "phone") {
+          this.getService.sendSMSforOTP({ "UserName": this.forgotpasswordparams.UserName }).subscribe((h: OTPResponseBody | string) => {
+            this.loadingController.dismiss().then(() => {
+              console.log(h.valueOf());
+              this.onlclickOTPModal(h.valueOf());
+            })
+
+
+
           })
-          
-          
- 
-        })
-      }
-      else{
-        this.loadingController.dismiss();
-      }
-     })
-     }) ;
-     
-     
-     
+        }
+        else {
+          this.loadingController.dismiss();
+        }
+      })
+    });
+
+
+
   }
- async onlclickOTPModal(otpinfo?){
+  async onlclickOTPModal(otpinfo?) {
     const OTPmodal = await this.modalController.create({
-     component:ForgotPasswordOtpModalComponent,
-     cssClass:"OTP-password-modal",
-     componentProps:{'OTPinfo':otpinfo?otpinfo: this.forgotpasswordparams.UserName}
+      component: ForgotPasswordOtpModalComponent,
+      cssClass: "OTP-password-modal",
+      componentProps: { 'OTPinfo': otpinfo ? otpinfo : this.forgotpasswordparams.UserName }
     })
     return await OTPmodal.present();
   }
-  
+
 
   showpassword() {
     this.fieldTextType = !this.fieldTextType;
