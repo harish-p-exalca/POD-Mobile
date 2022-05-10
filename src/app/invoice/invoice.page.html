@@ -9,195 +9,66 @@
     <ionlabel class="A-and-P">Approved and Pending Invoices</ionlabel>
   </div>
   <div>
-
   </div>
-
   <div fxFlex="20" fxLayoutAlign="center center">
     <img (click)="onClickProfile($event)" class="pic" src="../../assets/img/user.svg">
   </div>
 </ion-header>
 
 <ion-content #pageTop>
-  <div style="height: 50px; width: 100%; margin-bottom: 5px; ">
-    <ion-toolbar style="position: fixed;">
-      <div>
-        <ion-segment (ionChange)="segmentChanged($event)" [(ngModel)]="segment" mode="md" color="primary">
-          <ion-segment-button value=0>
-            <ion-label>Pending</ion-label>
-
-          </ion-segment-button>
-          <ion-segment-button value=1>
-            <ion-label>Partially Confirmed</ion-label>
-
-          </ion-segment-button>
-          <ion-segment-button value=2>
-            <ion-label>Confirmed</ion-label>
-
-          </ion-segment-button>
-
-        </ion-segment>
-      </div>
-
-
-    </ion-toolbar>
-
-  </div>
   <div class="search_div">
-
     <button class="search_button" (click)="onClickFilterModal()">CLICK HERE TO SEARCH</button>
-  </div><br>
-
-
-  <ion-slides [options]="sliderOptions" #slides (ionSlideDidChange)="slideChanged()" scrollbar="true">
-
-    <ion-slide>
-
-      <div class="card-div" fxLayout="column" fxLayoutGap="10px">
-        <ion-card *ngFor="let d of filteredPendingInvoices;" class="card">
-          <ion-card-header class="card-header">
-            <ion-label class="invoiceno">INVOICE NO: <ion-label class="num">{{d.ODIN}}</ion-label>
-            </ion-label>
-          </ion-card-header>
-          <ion-card-content style="padding: 0%; width: 100%; height: 100%;">
-            <div class="cardbody">
-
-              <div>
-                <ion-label class="vehicle1">Vehicle No</ion-label><br>
-                <ion-label class="vehicleno1">{{d.VEHICLE_NO}}</ion-label>
-
-
-              </div>
-              <div>
-
-                <ion-label class="eway1"> Ewaybill No</ion-label><br>
-
-                <ion-label class="ewaybill1">{{d.EWAYBILL_NO}}</ion-label>
-
-
-              </div>
-
-              <div>
-                <ion-label class="outbound1">Outbound Delivery</ion-label><br>
-                <ion-label class="outbounddelivery1">{{d.OUTBOUND_DELIVERY}}</ion-label>
-              </div>
-            </div>
-            <div>
-              <button id="view" (click)="onClicknavigate(d,d.STATUS)">
-                <ion-label class="view-txt">View Details</ion-label>
-              </button>
-              <button id="confirm" *ngIf="userdetails.userRole=='Customer'"
-                (click)="OpenDialogModal(d.HEADER_ID,d.CREATED_BY,d.INV_NO,d.INV_DATE,d.LR_DATE)">
-                <img class="tick" src="../../assets/img/tick (3).svg">
-                <ion-label class="con-txt">Confirm</ion-label>
-              </button>
-
-              <button id="confirm" *ngIf="userdetails.userRole!='Customer' && d.STATUS=='Saved'"
-                (click)="OpenDialogModal(d.HEADER_ID,d.CREATED_BY,d.INV_NO,d.INV_DATE,d.LR_DATE)">
-                <img class="tick" src="../../assets/img/tick (3).svg">
-                <ion-label class="con-txt">Confirm</ion-label>
-              </button>
-            </div>
-          </ion-card-content>
-        </ion-card>
-        <ion-infinite-scroll threshold="10px" (ionInfinite)="loadMoreInvoices($event)">
-          <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
-          </ion-infinite-scroll-content>
-        </ion-infinite-scroll>
-      </div>
-
-
-    </ion-slide>
-
-
-    <ion-slide>
-
-      <div class="card-div" fxLayout="column" fxLayoutGap="10px">
-        <ion-card *ngFor="let d of filteredPartiallyApprovedInvoices" class="card">
-          <ion-card-header class="card-header">
-            <ion-label class="invoiceno">INVOICE NO: <ion-label class="num">{{d.ODIN}}</ion-label>
-            </ion-label>
-          </ion-card-header>
-          <ion-card-content style="padding: 0%; width: 100%; height: 100%;">
-            <div class="cardbody">
-
-              <div>
-                <ion-label class="vehicle1">Vehicle No</ion-label><br>
-                <ion-label class="vehicleno1">{{d.VEHICLE_NO}}</ion-label>
-
-
-              </div>
-              <div>
-
-                <ion-label class="eway1"> Ewaybill No</ion-label><br>
-
-                <ion-label class="ewaybill1">{{d.EWAYBILL_NO}}</ion-label>
-
-
-              </div>
-
-              <div>
-                <ion-label class="outbound1">Outbound Delivery</ion-label><br>
-                <ion-label class="outbounddelivery1">{{d.OUTBOUND_DELIVERY}}</ion-label>
-              </div>
-            </div>
-            <div>
-              <button id="view" (click)="onClicknavigate(d,d.STATUS)">
-                <ion-label class="view-txt">View Details</ion-label>
-              </button>
-
-            </div>
-          </ion-card-content>
-        </ion-card>
-      </div>
-
-
-    </ion-slide>
-
-
-    <ion-slide>
-      <div class="card-div" fxLayout="column" fxLayoutGap="10px">
-        <ion-card *ngFor="let d of filteredApprovedInvoices" class="card">
-          <ion-card-header class="card-header">
-            <ion-label class="invoiceno">INVOICE NO: <ion-label class="num">{{d.ODIN}}</ion-label>
-            </ion-label>
-          </ion-card-header>
-          <ion-card-content style="padding: 0%; width: 100%; height: 100%;">
-            <div class="cardbody">
-
-              <div>
-                <ion-label class="vehicle1">Vehicle No</ion-label><br>
-                <ion-label class="vehicleno1">{{d.VEHICLE_NO}}</ion-label>
-
-
-              </div>
-              <div>
-
-                <ion-label class="eway1"> Ewaybill No</ion-label><br>
-
-                <ion-label class="ewaybill1">{{d.EWAYBILL_NO}}</ion-label>
-
-
-              </div>
-
-              <div>
-                <ion-label class="outbound1">Outbound Delivery</ion-label><br>
-                <ion-label class="outbounddelivery1">{{d.OUTBOUND_DELIVERY}}</ion-label>
-              </div>
-            </div>
-            <div>
-              <button id="view" (click)="onClicknavigate(d,d.STATUS)">
-                <ion-label class="view-txt">View Details</ion-label>
-              </button>
-
-            </div>
-          </ion-card-content>
-        </ion-card>
-      </div>
-
-    </ion-slide>
-
-
-  </ion-slides>
-
-
+  </div>
+  <div class="card-div" fxLayout="column" fxLayoutGap="10px">
+    <ion-card *ngFor="let d of FilteredInvoices;" class="card">
+      <ion-card-header class="card-header">
+        <ion-label class="invoiceno">INVOICE NO: <ion-label class="num">{{d.ODIN}}</ion-label>
+        </ion-label>
+        <ion-label style="font-size: 12px;">{{d.STATUS=='Open'?'Pending':d.STATUS}}</ion-label>
+      </ion-card-header>
+      <ion-card-content style="padding: 0%; width: 100%; height: 100%;">
+        <div class="cardbody">
+          <div>
+            <ion-label class="vehicle1">Vehicle No</ion-label><br>
+            <ion-label class="vehicleno1">{{d.VEHICLE_NO}}</ion-label>
+          </div>
+          <div>
+            <ion-label class="eway1"> Ewaybill No</ion-label><br>
+            <ion-label class="ewaybill1">{{d.EWAYBILL_NO}}</ion-label>
+          </div>
+          <div>
+            <ion-label class="outbound1">Outbound Delivery</ion-label><br>
+            <ion-label class="outbounddelivery1">{{d.OUTBOUND_DELIVERY}}</ion-label>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between center" style="padding: 12px;">
+          <button class="view" (click)="onClicknavigate(d,d.STATUS)">
+            <ion-label class="view-txt">View Details</ion-label>
+          </button>
+          <button class="confirm" *ngIf="userdetails.userRole=='Customer' && (d.STATUS=='Open' || d.STATUS=='Saved')"
+            (click)="OpenDialogModal(d.HEADER_ID,d.CREATED_BY,d.INV_NO,d.INV_DATE,d.LR_DATE,d.VEHICLE_REPORTED_DATE)">
+            <img class="tick" src="../../assets/img/tick (3).svg">
+            <ion-label class="con-txt">Confirm</ion-label>
+          </button>
+          <button class="confirm" *ngIf="userdetails.userRole!='Customer' && d.STATUS=='Saved'"
+            (click)="OpenDialogModal(d.HEADER_ID,d.CREATED_BY,d.INV_NO,d.INV_DATE,d.LR_DATE,d.VEHICLE_REPORTED_DATE,true)">
+            <img class="tick" src="../../assets/img/tick (3).svg">
+            <ion-label class="con-txt">Confirm</ion-label>
+          </button>
+          <button class="confirm" *ngIf="userdetails.userRole=='Customer' && (d.STATUS=='Confirmed' || d.STATUS=='PartiallyConfirmed')"
+            (click)="OpenDialogModal(d.HEADER_ID,d.CREATED_BY,d.INV_NO,d.INV_DATE,d.LR_DATE,d.VEHICLE_REPORTED_DATE,true)">
+            <img class="tick" src="../../assets/img/tick (3).svg">
+            <ion-label class="con-txt">Re-Confirm</ion-label>
+          </button>
+          <button *ngIf="d.ATTACHMENT_ID" class="view" (click)="OpenPDFViewer(d.HEADER_ID,d.ATTACHMENT_ID,d.ATTACHMENT_NAME)">
+            <ion-icon name="attach-outline"></ion-icon>
+          </button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+    <ion-infinite-scroll threshold="10px" (ionInfinite)="loadMoreInvoices($event)">
+      <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
 </ion-content>

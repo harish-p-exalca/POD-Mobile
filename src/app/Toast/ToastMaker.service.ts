@@ -112,6 +112,15 @@ export class ToastMaker {
     (await tst).present();
   }
 
+  async ReConfirmSuccess() {
+    let tst = this.toast.create({
+      message: "Invoice Confirmed successfully!",
+      duration: 3000,
+      mode: "md"
+    });
+    (await tst).present();
+  }
+
   async logoutOutSuccess() {
     let tst = this.toast.create({
       message: "Logout success!",
@@ -204,6 +213,13 @@ export class ToastMaker {
     (await tst).present();
   }
 
-  
+  async fileSaved(s: string) {
+    let tst = this.toast.create({
+      message: 'File saved to ' + s,
+      duration: 3000,
+      mode: "md"
+    });
+    (await tst).present();
+  }
 
 }

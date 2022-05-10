@@ -19,7 +19,11 @@ const routes: Routes = [
   {
     path: 'confirmed-invoices',
     loadChildren: () => import('./confirmed-invoices/confirmed-invoices.module').then( m => m.ConfirmedInvoicesPageModule)
+  },  {
+    path: 'saved-invoices',
+    loadChildren: () => import('./saved-invoices/saved-invoices.module').then( m => m.SavedInvoicesPageModule)
   }
+
 
 ];
 

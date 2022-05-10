@@ -18,60 +18,52 @@
 </ion-header>
 
 <ion-content style="overflow: auto;">
-  <div fxFlex style="margin-top:10px;" fxLayoutAlign="space-around center" fxLayout="column" fxLayoutGap="20px">
+  <div fxFlex fxLayout="row" fxLayoutAlign="end center" class="filter-wrapper" fxLayoutGap="12px">
+    <button mat-raised-button class="fab-color" (click)="onClickFilterModal()">
+      <img src="../../assets/img/adjust.svg" style="margin-right:8px">
+      <span class="filter-txt">Filter</span>
+    </button>
+  </div>
+  <div fxFlex fxLayoutAlign="start center" fxLayout="column" fxLayoutGap="4px">
     <ion-card class="card" fxFlex="50">
       <ion-card-header style="height: 19%; width: 100%; border-bottom:2px solid  #e2e2e2;" fxLayout="row">
-        <div fxFlex="55" fxLayoutAlign="start center">
+        <div fxFlex fxLayoutAlign="center center">
           <ion-label class="title">APPROVED / PENDING INVOICES</ion-label>
         </div>
-        <div fxFlex>
-
-        </div>
-        <div fxFlex="20" style="background-color: #e2e2e2; height: 90%;" fxLayoutAlign="center center">
+        <!-- <div fxFlex="20" style="background-color: #e2e2e2; height: 90%;" fxLayoutAlign="center center">
           <ion-label style="font-size: 50%;">ALL</ion-label>
         </div>
         <div fxFlex="5" fxLayoutAlign="center center">
           <img src="../../assets/img/adjust.svg">
-        </div>
+        </div> -->
       </ion-card-header>
 
       <ion-card-content style="width: 100%; height: 81%;">
-        <div style="width: 100%; height: 100%;" fxLayout="row">
-
-
-
+        <div style="width: 100%; height: 100%;padding-top: 16px;" fxLayout="row">
           <div fxFlex="100" fxLayoutAlign="center center">
             <canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels" [chartType]="doughnutChartType"
               [options]="doughnutChartOptions" [colors]="colors" (chartClick)="doughnutChartClicked($event)">
             </canvas>
           </div>
-
-
-
         </div>
-
-
       </ion-card-content>
     </ion-card>
 
     <ion-card class="card" fxFlex="50">
       <ion-card-header style="height: 19%; width: 100%; border-bottom:2px solid  #e2e2e2;" fxLayout="row">
-        <div fxFlex="55" fxLayoutAlign="start center">
-          <ion-label class="title">LEAD TIME</ion-label>
+        <div fxFlex fxLayoutAlign="center center">
+          <ion-label class="title">PROPOSED DELIVERY DATE</ion-label>
         </div>
-        <div fxFlex>
-
-        </div>
-        <div fxFlex="20" style="background-color: #e2e2e2; height: 90%;" fxLayoutAlign="center center">
+        <!-- <div fxFlex="20" style="background-color: #e2e2e2; height: 90%;" fxLayoutAlign="center center">
           <ion-label style="font-size: 50%;">ALL</ion-label>
         </div>
         <div fxFlex="5" fxLayoutAlign="center center">
           <img src="../../assets/img/adjust.svg">
-        </div>
+        </div> -->
       </ion-card-header>
 
       <ion-card-content style="width: 100%; height: 81%;">
-        <div style="width: 100%; height: 100%;" fxLayout="row">
+        <div style="width: 100%; height: 100%;padding-top: 16px;" fxLayout="row">
           <div fxFlex="100" fxLayoutAlign="center center">
             <canvas baseChart [data]="doughnutChartData2" [labels]="doughnutChartLabels2" [chartType]="doughnutChartType2"
               [options]="doughnutChartOptions2" [colors]="colors2" (chartClick)="doughnutChartClicked2($event)">
@@ -84,25 +76,19 @@
 
     <ion-card class="card" fxFlex="50">
       <ion-card-header style="height: 19%; width: 100%; border-bottom:2px solid  #e2e2e2;" fxLayout="row">
-        <div fxFlex="53" fxLayoutAlign="start center">
+        <div fxFlex fxLayoutAlign="center center">
           <ion-label class="title">DELIVERY STATUS</ion-label>
         </div>
-        <div fxFlex>
-
-        </div>
-        <div fxFlex="20" style="background-color: #e2e2e2; height: 90%;" fxLayoutAlign="center center">
+        <!-- <div fxFlex="20" style="background-color: #e2e2e2; height: 90%;" fxLayoutAlign="center center">
           <ion-label style="font-size: 50%;">ALL</ion-label>
         </div>
         <div fxFlex="5" fxLayoutAlign="center center">
           <img src="../../assets/img/adjust.svg">
-        </div>
+        </div> -->
       </ion-card-header>
 
       <ion-card-content style="width: 100%; height: 81%;">
-        <div style="width: 100%; height: 100%;" fxLayout="row">
-
-
-
+        <div style="width: 100%; height: 100%;padding-top: 16px;" fxLayout="row">
           <div fxFlex="100" fxLayoutAlign="center center">
             <canvas baseChart [data]="doughnutChartData1" [labels]="doughnutChartLabels1"
               [chartType]="doughnutChartType1" [options]="doughnutChartOptions1" [colors]="colors1"
@@ -110,11 +96,8 @@
             </canvas>
           </div>
         </div>
-
-
       </ion-card-content>
     </ion-card>
-
   </div>
 
 

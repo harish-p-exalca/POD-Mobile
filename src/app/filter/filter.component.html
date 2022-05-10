@@ -1,49 +1,35 @@
 <div fxLayout="column" style="margin: 10px;" fxFlex="100" fxLayoutAlign="space-between center">
-  <div fxLayout="column" *ngIf="!hideforCustomer" class="dailogcontent" fxLayoutAlign="space-evenly center">
-
-    <div class="spdiv" *ngIf="!hidestatus" fxLayoutAlign="space-evenly center">
-      <mat-form-field class="mtf" appearance="fill">
+  <!-- Amararaja User -->
+  <div fxLayout="column" *ngIf="!IsCustomer" class="dailogcontent" fxLayoutAlign="space-evenly center">
+    <div class="spdiv" fxLayoutAlign="space-evenly center">
+      <mat-form-field class="mtf" appearance="fill" *ngIf="!isFromCharts">
         <mat-label>Status</mat-label>
-        <mat-select [(ngModel)]="status">
-          <mat-option value="">All Invoices</mat-option>
-          <mat-option value="Open">Pending</mat-option>
-          <mat-option value="Saved">Saved</mat-option>
-
+        <mat-select [formControl]="status" multiple>
+          <mat-option #allStatusSelected (click)="toggleStatusSelection()" value="all">All</mat-option>
+          <mat-option *ngFor="let status of StatusList" (click)="toggleStatus()" [value]="status">
+            {{status=='Open'?'Pending':status}}</mat-option>
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field class="mtf" appearance="fill">
+      <!-- <app-custom-controls-plant class="mtf" [AllPlants]="PlantList" [formControl]="plant" [ngClass]="{'mtf1':isFromCharts}">
+      </app-custom-controls-plant> -->
+      <mat-form-field class="mtf" appearance="fill" [ngClass]="{'mtf1':isFromCharts}">
         <mat-label>Plant</mat-label>
         <mat-select [formControl]="plant" multiple>
-
-          <mat-option #allSelected (click)="toggleAllSelection()" value="all">All</mat-option>
+          <mat-option #allPlantSelected (click)="toggleAllSelection()" value="all">All</mat-option>
           <mat-option *ngFor="let plants of PlantList" (click)="togglePerOne()" [value]="plants.PlantCode">
             {{plants.PlantCode}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
-
-    <div class="spdiv" *ngIf="hidestatus" fxLayoutAlign="space-evenly center">
-
-
-      <mat-form-field class="mtf1" appearance="fill">
-        <mat-label>Plant</mat-label>
-
-        <mat-select [formControl]="plant" multiple>
-          <mat-option #allSelected (click)="toggleAllSelection()" value="all">All</mat-option>
-          <mat-option *ngFor="let plants of PlantList" (click)="togglePerOne()" [value]="plants.PlantCode">
-            {{plants.PlantCode}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-
 
     <div class="spdiv" fxLayoutAlign="space-evenly center">
       <mat-form-field class="mtf" appearance="fill">
         <mat-label>Organization</mat-label>
         <mat-select [formControl]="orgs" multiple>
           <mat-option #allSelected2 (click)="toggleAllSelection2()" value="all">All</mat-option>
-          <mat-option *ngFor="let org of OrgList" (click)="togglePerOne2()" [value]="org.OrganizationCode">{{org.OrganizationCode}}</mat-option>
+          <mat-option *ngFor="let org of OrgList" (click)="togglePerOne2()" [value]="org.OrganizationCode">
+            {{org.OrganizationCode}}</mat-option>
         </mat-select>
       </mat-form-field>
 
@@ -57,193 +43,71 @@
     </div>
 
     <div class="spdiv" fxLayoutAlign="space-evenly center">
+      <mat-form-field class="mtf" appearance="fill">
+        <mat-label>Start Date</mat-label>
+        <input matInput [(ngModel)]="start_date" [matDatepicker]="picker">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
 
+      <mat-form-field class="mtf" appearance="fill">
+        <mat-label>End Date</mat-label>
+        <input matInput [(ngModel)]="end_date" [matDatepicker]="picker1">
+        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+
+    </div>
+    <div class="spdiv" fxLayoutAlign="space-evenly center">
       <mat-form-field class="mtf1" appearance="fill">
         <mat-label>Customer Group</mat-label>
         <mat-select [formControl]="customer_group" multiple>
-          <!-- <mat-form-field class="mtf1" style="width: 100%;" appearance="fill">
-                <mat-label>Search</mat-label>
-                
-          <input matInput #SearchCG >
-              </mat-form-field> -->
           <mat-option #allSelected1 (click)="toggleAllSelection1()" value="all">All</mat-option>
           <mat-option *ngFor="let cg of CustGrps" (click)="togglePerOne1()" [value]="cg.CustomerGroupCode">
             {{cg.CustomerGroupCode}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
-
     <div class="spdiv" fxLayoutAlign="space-evenly center">
-      <mat-form-field class="mtf" appearance="fill">
-        <mat-label>Start Date</mat-label>
-        <input matInput [(ngModel)]="start_date" [matDatepicker]="picker">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-
-      <mat-form-field class="mtf" appearance="fill">
-        <mat-label>End Date</mat-label>
-        <input matInput [(ngModel)]="end_date" [matDatepicker]="picker1">
-        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-        <mat-datepicker #picker1></mat-datepicker>
-      </mat-form-field>
-
-    </div>
-    <div class="spdiv" fxLayoutAlign="space-evenly center">
-      <mat-form-field class="mtf" appearance="fill">
-        <mat-label>Invoice Number</mat-label>
-
-        <input matInput [(ngModel)]="invoice_number">
-      </mat-form-field>
-
       <mat-form-field class="mtf" appearance="fill">
         <mat-label>Customer Name</mat-label>
-
         <input matInput [(ngModel)]="customer_name">
       </mat-form-field>
 
+      <mat-form-field class="mtf" appearance="fill" *ngIf="!isFromCharts">
+        <mat-label>Invoice Number</mat-label>
+        <input matInput [(ngModel)]="invoice_number">
+      </mat-form-field>
     </div>
-    <!-- <div [hidden]="hidestatus"  style="justify-content: space-between;width: 100%;height: 10%; display: flex;align-items: center;"  >
-        <div>
-          <ion-label>
-            Status:
-          </ion-label>
-        </div>
-        <div >
-          <mat-form-field style="width: 150px;"  appearance="fill">
-          
-            <mat-select [(ngModel)]="status" >
-              <mat-option value="">All Invoices</mat-option>
-            <mat-option value="Open">Pending</mat-option>
-            <mat-option value="Saved">Saved</mat-option>
-           
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </div>
-      <div *ngIf="!hideforCustomer" style="justify-content: space-between;width: 100%; display: flex;align-items: center;">
-        <div >
-          <ion-label>
-            Plant:
-          </ion-label>
-        </div>
-        <div>
-          
-          <mat-form-field style="width: 150px;" appearance="fill">
-            <mat-label>Plant</mat-label>
-            <mat-select [formControl]="plant" multiple>
-              
-              <mat-option *ngFor="let plants of PlantList" [value]="plants.PlantCode">{{plants.PlantCode}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </div>
-      <div *ngIf="!hideforCustomer" style="justify-content: space-between;width: 100%;height: 10%; display: flex;align-items: center;">
-        <div >
-          <ion-label>
-            Organization:
-          </ion-label>
-        </div>
-        <div>
-          
-          <mat-form-field style="width: 150px;" appearance="fill">
-            <mat-label>Organization</mat-label>
-            <mat-select [formControl]="orgs" >
-              
-              <mat-option *ngFor="let org of OrgList" [value]="org.OrganizationCode">{{org.OrganizationCode}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </div>
-      <div *ngIf="!hideforCustomer" style="justify-content: space-between;width: 100%; display: flex;align-items: center;">
-        <div >
-          <ion-label>
-            Division:
-          </ion-label>
-        </div>
-        <div>
-          
-          <mat-form-field style="width: 150px;" appearance="fill">
-            <mat-label>Division</mat-label>
-            <mat-select [formControl]="divs">
-              <mat-option  [value]="All">All</mat-option>
-              <mat-option *ngFor="let div of Divisions" [value]="div">{{div}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </div>
-      <div style="justify-content: space-between;width: 100%; height: 10%;display: flex;align-items: center;" >
-        <div>
-          <ion-label>
-            Invoice Number:
-          </ion-label>
-        </div>
-        <div>
-          <input [(ngModel)]="invoice_number" class="inpt">
-        </div>
-      </div>
-      <div  style="justify-content: space-between;width: 100%; display: flex;align-items: center;" >
-        <div>
-          <ion-label>
-            Start Date:
-          </ion-label>
-        </div>
-        <div>
-          <input [(ngModel)]="start_date" type="date" class="inpt" placeholder="DD/MM/YYYY">
-        </div>
-      </div>
-      <div  style="justify-content: space-between;width: 100%; display: flex;align-items: center;" >
-        <div>
-          <ion-label>
-            End Date:
-          </ion-label>
-        </div>
-        <div><input [(ngModel)]="end_date" type="date" class="inpt"  placeholder="DD/MM/YYYY" ></div>
+    <div class="spdiv" fxLayoutAlign="space-evenly center" *ngIf="!isFromCharts">
+      <mat-form-field class="mtf" appearance="fill">
+        <mat-select placeholder="Proposed Delivery Date" [formControl]="LeadTime" multiple>
+          <mat-option value="within">Within PDD</mat-option>
+          <mat-option value="beyond">Beyond PDD</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-      </div>
-      <div *ngIf="!hideforCustomer"  style="justify-content: space-between;width: 100%; display: flex;align-items: center;" >
-        <div>
-          <ion-label>
-            Customer Name:
-          </ion-label>
-        </div>
-        <div>
-          <input [(ngModel)]="customer_name" class="inpt">
-        </div>
-      </div>
-      <div *ngIf="!hideforCustomer"  style="justify-content: space-between;width: 100%; display: flex;align-items: center;" >
-        <div>
-          <ion-label>
-            Customer Group:
-          </ion-label>
-        </div>
-        <div>
-          <input [(ngModel)]="customer_group" class="inpt">
-        </div>
-      </div> -->
+      <mat-form-field class="mtf" appearance="fill">
+        <mat-select placeholder="Delivery" [formControl]="Delivery" multiple>
+          <mat-option value="ontime">Ontime Delivery</mat-option>
+          <mat-option value="late">Late Delivery</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
   </div>
-
-  <div fxLayout="column" *ngIf="hideforCustomer" class="dailogcontent" fxLayoutAlign="space-evenly center">
-
-
-
-    <div class="spdiv" *ngIf="!hidestatus" fxLayoutAlign="space-evenly center">
-
-
+<!-- Customer User -->
+  <div fxLayout="column" *ngIf="IsCustomer" class="dailogcontent" fxLayoutAlign="space-evenly center">
+    <div class="spdiv" fxLayoutAlign="space-evenly center" *ngIf="!isFromCharts">
       <mat-form-field class="mtf1" appearance="fill">
         <mat-label>Status</mat-label>
-        <mat-select [(ngModel)]="status">
-          <mat-option value="">All Invoices</mat-option>
-          <mat-option value="Open">Pending</mat-option>
-          <mat-option value="Saved">Saved</mat-option>
-
+        <mat-select [formControl]="status" multiple>
+          <mat-option #allStatusSelected (click)="toggleStatusSelection()" value="all">All</mat-option>
+          <mat-option *ngFor="let status of StatusList" (click)="toggleStatus()" [value]="status">
+            {{status=='Open'?'Pending':status}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
 
-
-
-
     <div class="spdiv" fxLayoutAlign="space-evenly center">
       <mat-form-field class="mtf" appearance="fill">
         <mat-label>Start Date</mat-label>
@@ -258,19 +122,34 @@
         <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
         <mat-datepicker #picker1></mat-datepicker>
       </mat-form-field>
-
     </div>
-    <div class="spdiv" fxLayoutAlign="space-evenly center">
-      <mat-form-field class="mtf1" appearance="fill">
-        <mat-label>Invoice Number</mat-label>
 
-        <input matInput [(ngModel)]="invoice_number">
+    <div class="spdiv" fxLayoutAlign="space-evenly center" *ngIf="!isFromCharts">
+      <mat-form-field class="mtf" appearance="fill">
+        <mat-select placeholder="Proposed Delivery Date" [formControl]="LeadTime" multiple>
+          <mat-option value="within">Within PDD</mat-option>
+          <mat-option value="beyond">Beyond PDD</mat-option>
+        </mat-select>
       </mat-form-field>
 
-
-
+      <mat-form-field class="mtf" appearance="fill">
+        <mat-select placeholder="Delivery" [formControl]="Delivery" multiple>
+          <mat-option value="ontime">Ontime Delivery</mat-option>
+          <mat-option value="late">Late Delivery</mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
-
+    
+    <div class="spdiv" fxLayoutAlign="space-evenly center" *ngIf="!isFromCharts">
+      <mat-form-field class="mtf" appearance="fill">
+        <mat-label>Invoice Number</mat-label>
+        <input matInput [(ngModel)]="invoice_number">
+      </mat-form-field>
+      <mat-form-field class="mtf" appearance="fill">
+        <mat-label>LR Number</mat-label>
+        <input matInput [(ngModel)]="LRNumber">
+      </mat-form-field>
+    </div>
   </div>
 
   <div>
@@ -278,5 +157,4 @@
       <button fxFlexAlign="stretch" (click)="save()" class="sumbtn">SEARCH</button>
     </div>
   </div>
-
 </div>

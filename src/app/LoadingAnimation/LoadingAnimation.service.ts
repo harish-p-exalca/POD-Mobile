@@ -2,32 +2,32 @@ import { Injectable } from "@angular/core";
 import { LoadingController } from '@ionic/angular';
 
 @Injectable({
-    providedIn : "root"
+  providedIn: "root"
 })
 
-export class LoadingAnimation{
+export class LoadingAnimation {
 
-    constructor(public loadingController:LoadingController){
+  constructor(public loadingController: LoadingController) {
 
-    }
+  }
 
 
 
-    async presentLoading() {
-        const loading = await this.loadingController.create({
-          mode: "md",
-          message: 'Please wait...'
-    
-        });
-        await loading.present();
-      }
+  async presentLoading() {
+    const loading = await this.loadingController.create({
+      mode: "md",
+      message: 'Please wait...'
 
-      async presentChartAnimation() {
-        const loading = await this.loadingController.create({
-          mode: "md",
-          message: 'Rendering data...'
-    
-        });
-        await loading.present();
-      }
+    });
+    await loading.present();
+  }
+
+  async presentChartAnimation() {
+    const loading = await this.loadingController.create({
+      mode: "md",
+      message: 'Rendering data...'
+
+    });
+    await loading.present();
+  }
 }
