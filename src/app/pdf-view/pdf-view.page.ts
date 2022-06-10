@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, Platform } from '@ionic/angular';
 import { LoadingAnimation } from '../LoadingAnimation/LoadingAnimation.service';
 import { GetService } from '../services/getservice.service';
 import { ToastMaker } from '../Toast/ToastMaker.service';
@@ -29,13 +29,20 @@ export class PdfViewPage implements OnInit {
     private toast: ToastMaker,
     private activatedRoute: ActivatedRoute,
     private file: File,
-    private fileOpener: FileOpener
+    private fileOpener: FileOpener,
+    private platform:Platform
   ) {
 
   }
-
+  currentPlatform:string="";
   ngOnInit(): void {
-
+    this.platform.ready().then(() => {
+      if (this.platform.is('android')) {
+        this.currentPlatform="android";
+      } else if (this.platform.is('ios')) {
+        this.currentPlatform="ios";
+      }
+    });
   }
 
   ionViewWillEnter() {
@@ -143,29 +150,40 @@ export class PdfViewPage implements OnInit {
         {
           method: "GET"
         }).then(res => res.blob()).then(blob => {
-          this.file.writeFile(this.file.externalRootDirectory+"/Download/", this.docData?.AttachmentName, blob, { replace: true }).then(res => {
-            // this.fileOpener.open(
-            //   res.toInternalURL(),
-            //   'application/pdf'
-            // ).then((res) => {
-            //   console.log('file opened',res)
-            // }).catch(err => {
-            //   console.log('open error',err)
-            // });
-            this.toast.fileSaved(res.toInternalURL());
-            this.loadingController.getTop().then((has) => {
-              if (has) {
-                this.closeLoader();
-              }
+          if(this.currentPlatform=="android"){
+            this.file.writeFile(this.file.externalRootDirectory+"/Download/", this.docData?.AttachmentName, blob, { replace: true }).then(res => {
+              this.toast.fileSaved(res.toInternalURL());
+              this.loadingController.getTop().then((has) => {
+                if (has) {
+                  this.closeLoader();
+                }
+              });
+            }).catch(err => {
+              this.loadingController.getTop().then((has) => {
+                if (has) {
+                  this.closeLoader();
+                }
+              });
+              console.log('save error', err)
             });
-          }).catch(err => {
-            this.loadingController.getTop().then((has) => {
-              if (has) {
-                this.closeLoader();
-              }
+          }
+          else if(this.currentPlatform=="ios"){
+            this.file.writeFile(this.file.documentsDirectory, this.docData?.AttachmentName, blob, { replace: true }).then(res => {
+              this.toast.fileSaved(res.toInternalURL());
+              this.loadingController.getTop().then((has) => {
+                if (has) {
+                  this.closeLoader();
+                }
+              });
+            }).catch(err => {
+              this.loadingController.getTop().then((has) => {
+                if (has) {
+                  this.closeLoader();
+                }
+              });
+              console.log('save error', err)
             });
-            console.log('save error', err)
-          });
+          }
         }).catch(err => {
           this.loadingController.getTop().then((has) => {
             if (has) {
