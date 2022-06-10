@@ -1,14 +1,14 @@
-<ion-header class="header" fxLayout="row" fxLayoutAlign="space-around center">
+<ion-header class="header" fxLayout="row" fxLayoutAlign="start center">
   <div>
     <ion-buttons slot="start">
-      <ion-menu-button menu="main-menu" style="color: white"></ion-menu-button>
+      <!-- <ion-menu-button menu="main-menu" style="color: white"></ion-menu-button> -->
+      <ion-back-button class="back-btn"></ion-back-button>
     </ion-buttons>
   </div>
+  <div fxFlex></div>
   <div fxLayout=column fxLayoutAlign="center start" fxFlex="50">
     <ion-label class="name">Hello {{userdetails.displayName}},</ion-label>
     <ionlabel class="A-and-P">Approved and Pending Invoices</ionlabel>
-  </div>
-  <div>
   </div>
   <div fxFlex="20" fxLayoutAlign="center center">
     <img (click)="onClickProfile($event)" class="pic" src="../../assets/img/user.svg">
@@ -55,12 +55,14 @@
             <img class="tick" src="../../assets/img/tick (3).svg">
             <ion-label class="con-txt">Confirm</ion-label>
           </button>
-          <button class="confirm" *ngIf="userdetails.userRole=='Customer' && (d.STATUS=='Confirmed' || d.STATUS=='PartiallyConfirmed')"
+          <button class="confirm"
+            *ngIf="userdetails.userRole=='Customer' && (d.STATUS=='Confirmed' || d.STATUS=='PartiallyConfirmed')"
             (click)="OpenDialogModal(d.HEADER_ID,d.CREATED_BY,d.INV_NO,d.INV_DATE,d.LR_DATE,d.VEHICLE_REPORTED_DATE,true)">
             <img class="tick" src="../../assets/img/tick (3).svg">
             <ion-label class="con-txt">Re-Confirm</ion-label>
           </button>
-          <button *ngIf="d.ATTACHMENT_ID" class="view" (click)="OpenPDFViewer(d.HEADER_ID,d.ATTACHMENT_ID,d.ATTACHMENT_NAME)">
+          <button *ngIf="d.ATTACHMENT_ID" class="view"
+            (click)="OpenPDFViewer(d.HEADER_ID,d.ATTACHMENT_ID,d.ATTACHMENT_NAME)">
             <ion-icon name="attach-outline"></ion-icon>
           </button>
         </div>

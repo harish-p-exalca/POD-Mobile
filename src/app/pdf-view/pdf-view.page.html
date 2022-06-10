@@ -1,6 +1,9 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>{{docData?.AttachmentName}}</ion-title>
+  <ion-toolbar class="toolbar">
+    <ion-title class="title">{{docData?.AttachmentName}}</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button class="back-btn"></ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

@@ -2,6 +2,7 @@
     width: 100%;
     height: 65px;
     background-image: linear-gradient(to bottom, #fd9e47, #fdac61 49%, #ff9e45);
+    padding: 0 16px;
 }
 
 .name {
@@ -242,6 +243,9 @@
     width: 13.3%;
     height: 42.8%;
 
+}
+.back-btn{
+    --color:white;
 }
 
 
