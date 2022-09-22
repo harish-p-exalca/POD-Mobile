@@ -206,13 +206,14 @@
 <ion-footer class="ion-no-border">
   <ion-toolbar>
     <div style="width: 100%; height: 50px; padding-right: 3%;padding-left: 3%;" fxLayout="row"
-      fxLayoutAlign="space-between center">
-      <button *ngIf="(invoicedetails.STATUS=='Open' || invoicedetails.STATUS=='Saved') && userdetails.userRole=='Customer'" class="view" (click)="descriptionConfirmModal(true)" [disabled]="disable_save" [ngClass]="(disable_save)?'disablesave':'view'">
+      fxLayoutAlign="end center">
+      <!-- <button *ngIf="(invoicedetails.STATUS=='Open' || invoicedetails.STATUS=='Saved') && userdetails.userRole=='Customer'" class="view" (click)="descriptionConfirmModal(true)" [disabled]="disable_save" [ngClass]="(disable_save)?'disablesave':'view'">
         <ion-label class="view-txt" [ngClass]="(disable_save)?'disable_view-txt':'view-txt'">Save</ion-label>
-      </button>
+      </button> -->
       <button *ngIf="invoicedetails.ATTACHMENT_ID" id="view" (click)="OpenPDFViewer(invoicedetails.HEADER_ID,invoicedetails.ATTACHMENT_ID,invoicedetails.ATTACHMENT_NAME)">
         <ion-icon name="attach-outline"></ion-icon>
       </button>
+      <div fxFlex></div>
       <button *ngIf="!invoicedetails.STATUS.includes('Confirmed') && userdetails.userRole=='Customer'" class="confirm" (click)="descriptionConfirmModal()">
         <img class="tick" src="../../assets/img/tick (3).svg">
         <ion-label class="con-txt">Confirm</ion-label>
