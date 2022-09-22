@@ -129,8 +129,11 @@ export class AppComponent implements OnInit {
     if (this.currentPlatform=="android"){
       let browser = InAppBrowser.create("https://play.google.com/store/apps/details?id=com.amararaja.pod");
     }
-    else{
+    else if(this.currentPlatform=="ios"){
       let browser = InAppBrowser.create("https://testflight.apple.com/v1/invite/ad9b6fea0a0542c4b79e4099fcbdb5359409c1c53b0d40198cd110892fe09e325c332a21?ct=74242P638S&advp=10000&platform=ios");
+    }
+    else{
+      let browser = InAppBrowser.create("https://play.google.com/store/apps/details?id=com.amararaja.pod");
     }
   }
   getUserFromBehaviourSubject() {
