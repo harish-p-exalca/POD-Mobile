@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { GetService } from '../services/getservice.service';
-import { TokenResponse } from '../models/TokenResponse.model';
+import { geoLocation, TokenResponse } from '../models/TokenResponse.model';
 import { catchError } from 'rxjs/operators';
 import { MenuController, ToastController, Platform, AlertController, ModalController } from '@ionic/angular';
 import { DataService } from '../services/BehaviourSubject.service';
@@ -21,6 +21,7 @@ import { OTPResponseBody } from '../models/OTPResponseBody.model';
 import { environment } from 'src/environments/environment';
 import { SharedParameterService } from '../services/shared-parameter.service';
 import { FilterClass } from '../models/FilterParam.model';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -52,7 +53,8 @@ export class HomePage implements OnInit {
     private getService: GetService,
     public menuCtrl: MenuController,
     private storage: StorageService,
-    private sharedService: SharedParameterService
+    private sharedService: SharedParameterService,
+    private _httpClient: HttpClient,
   ) {
     this.dataservice.SignedInUser(this.response_data);
   }
@@ -115,6 +117,29 @@ export class HomePage implements OnInit {
   //  })
   // }
 
+  getLocation(): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          if (position) {
+            const Location = new geoLocation();
+            Location.latitude = position.coords.latitude;
+            Location.longitude = position.coords.longitude;
+            resolve(Location);
+          }
+        },
+          (error) => {
+            reject(String(error));
+          });
+      }
+      else {
+        alert("Geolocation is not supported by this browser.");
+        reject("");
+      }
+    });
+
+  }
+
   onClickSubmit() {
     this.loading.presentLoading().then(() => {
 
@@ -124,16 +149,37 @@ export class HomePage implements OnInit {
         this.getService.loginResponse(temp).subscribe((data: any) => {
           this.response_data = data;
 
+          this.getLocation().then(response => {
+            this._httpClient.get("https://api.ipify.org/?format=json").subscribe((res: any) => {
+              this.response_data.ipAddress = res.ip;
+              this.response_data.geoLocation = JSON.stringify(response);
 
+              this.storage.setObject('signedUser', this.response_data);
 
-          this.storage.setObject('signedUser', this.response_data);
+              this.dataservice.SignedInUser(this.response_data);
 
-          this.dataservice.SignedInUser(this.response_data);
+              this.router.navigate(['charts', JSON.stringify(this.response_data)]).then(() => {
+                this.loadingController.dismiss()
+              })
+              this.toast.loginsuccess();
 
-          this.router.navigate(['charts', JSON.stringify(this.response_data)]).then(() => {
-            this.loadingController.dismiss()
-          })
-          this.toast.loginsuccess();
+            });
+          }).catch(err => {
+            this._httpClient.get("https://api.ipify.org/?format=json").subscribe((res: any) => {
+              this.response_data.ipAddress = res.ip;
+              this.response_data.geoLocation = "-";
+
+              this.storage.setObject('signedUser', this.response_data);
+
+              this.dataservice.SignedInUser(this.response_data);
+
+              this.router.navigate(['charts', JSON.stringify(this.response_data)]).then(() => {
+                this.loadingController.dismiss()
+              })
+              this.toast.loginsuccess();
+            });
+          });
+
 
 
         },

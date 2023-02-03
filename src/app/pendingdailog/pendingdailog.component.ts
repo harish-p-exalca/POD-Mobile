@@ -59,7 +59,7 @@ export class PendingdailogComponent implements OnInit {
     else {
       this.mindate = this.l_dt.slice(0, 10);
     }
-    if(this.vehicleReportedDate){
+    if (this.vehicleReportedDate) {
       this.reportdate.setValue(this.vehicleReportedDate);
     }
     this.dtpipe = new DatePipe('en-US');
@@ -69,7 +69,7 @@ export class PendingdailogComponent implements OnInit {
   selectedFile: File;
   filename: string = "No file";
   a: string = "No";
-  reportdate: FormControl=new FormControl('',Validators.required);
+  reportdate: FormControl = new FormControl('', Validators.required);
   rcvdqnty: number;
   ngOnInit(): void {
 
@@ -123,13 +123,14 @@ export class PendingdailogComponent implements OnInit {
 
   save() {
     this.submitclicked = true;
-    if(this.isReConfirm){
+    if (this.isReConfirm) {
       if (!this.isfileempty) {
         this.form.append('HeaderID', this.headerid.toString());
         this.form.append('CreatedBy', this.createdby);
         this.returndata.files = this.form;
         this.returndata.reportdate = this.DatePipe.transform(this.reportdate.value, 'yyyy-MM-dd');
-        this.modalCtrl.dismiss(this.returndata);
+        // let returnDta = {'data':this.returndata,'name':this.selectedFile.name}
+        this.modalCtrl.dismiss(this.returndata, this.selectedFile.name);
       }
       else {
         if (this.isfileempty) {
@@ -137,14 +138,14 @@ export class PendingdailogComponent implements OnInit {
         }
       }
     }
-    else{
-      if(this.reportdate.valid){
+    else {
+      if (this.reportdate.valid) {
         if (!this.isfileempty) {
           this.form.append('HeaderID', this.headerid.toString());
           this.form.append('CreatedBy', this.createdby);
           this.returndata.files = this.form;
           this.returndata.reportdate = this.DatePipe.transform(this.reportdate.value, 'yyyy-MM-dd');
-          this.modalCtrl.dismiss(this.returndata);
+          this.modalCtrl.dismiss(this.returndata, this.selectedFile.name);
         }
         else {
           if (this.isfileempty) {
@@ -152,7 +153,7 @@ export class PendingdailogComponent implements OnInit {
           }
         }
       }
-      else{
+      else {
         this.reportdate.markAsTouched();
         this.reportdate.markAsDirty();
       }

@@ -18,6 +18,7 @@ import { CustomerGroup } from '../models/CustomerGroup.model';
 import { environment } from 'src/environments/environment';
 import { SharedParameterService } from './shared-parameter.service';
 import { FilterClass } from '../models/FilterParam.model';
+import { UserActionHistory } from '../models/TokenResponse.model';
 
 @Injectable({
   providedIn: "root"
@@ -86,38 +87,42 @@ export class GetService {
     );
   }
 
-
+  CreateUserActionHistory(log: UserActionHistory): Observable<any> {
+    return this.http.post<any>(this.baseUrl + "/api/PODConfirmation/CreateUserActionHistory", log, { headers: this.headers }).pipe(
+      retry(5),
+      catchError(this.handleError<any>('getHeroes', []))
+    );
+  }
 
   deliverychart(usercode: string, userid: string, role: string): Observable<any> {
-    var filterClass=this.sharedParams.GetChartFilterData();
-    filterClass.UserCode=usercode;
-    filterClass.UserID=userid;
+    var filterClass = this.sharedParams.GetChartFilterData();
+    filterClass.UserCode = usercode;
+    filterClass.UserID = userid;
     if (role == "Customer") {
-      return this.http.post<any>(this.baseUrl + "/api/Mobile/FilterDeliveryCountByUser" , filterClass,{ headers: this.headers }).pipe(
+      return this.http.post<any>(this.baseUrl + "/api/Mobile/FilterDeliveryCountByUser", filterClass, { headers: this.headers }).pipe(
         retry(5),
         catchError(this.handleError<any>('getHeroes', []))
       )
 
     }
     else {
-      return this.http.post<any>(this.baseUrl + "/api/Mobile/FilterDeliverysCount" , filterClass,{ headers: this.headers }).pipe(
+      return this.http.post<any>(this.baseUrl + "/api/Mobile/FilterDeliverysCount", filterClass, { headers: this.headers }).pipe(
         retry(5),
         catchError(this.handleError<any>('getHeroes', []))
-      )
-        ;
+      );
     }
 
   }
 
-  FilterInvoiceData(filterClass:FilterClass, role: string): Observable<any> {
+  FilterInvoiceData(filterClass: FilterClass, role: string): Observable<any> {
     if (role == "Customer") {
-      return this.http.post<any>(this.baseUrl + "/api/Mobile/FilterInvoicesByUser",filterClass,{ headers: this.headers }).pipe(
+      return this.http.post<any>(this.baseUrl + "/api/Mobile/FilterInvoicesByUser", filterClass, { headers: this.headers }).pipe(
         retry(5),
         catchError(this.handleError<any>('getHeroes', []))
       );
     }
     else {
-      return this.http.post<any>(this.baseUrl + "/api/Mobile/FilterInvoices",filterClass,{ headers: this.headers }).pipe(
+      return this.http.post<any>(this.baseUrl + "/api/Mobile/FilterInvoices", filterClass, { headers: this.headers }).pipe(
         retry(5),
         catchError(this.handleError<any>('getHeroes', []))
       );
@@ -127,17 +132,17 @@ export class GetService {
 
 
   invoicechart(usercode: string, userid: string, role: string): Observable<any> {
-    var filterClass=this.sharedParams.GetChartFilterData();
-    filterClass.UserCode=usercode;
-    filterClass.UserID=userid;
+    var filterClass = this.sharedParams.GetChartFilterData();
+    filterClass.UserCode = usercode;
+    filterClass.UserID = userid;
     if (role == "Customer") {
-      return this.http.post<any>(this.baseUrl + "/api/Mobile/FilterInvoiceStatusCountByUser",filterClass,{ headers: this.headers }).pipe(
+      return this.http.post<any>(this.baseUrl + "/api/Mobile/FilterInvoiceStatusCountByUser", filterClass, { headers: this.headers }).pipe(
         retry(5),
         catchError(this.handleError<any>('getHeroes', []))
       );
     }
     else {
-      return this.http.post<any>(this.baseUrl + "/api/Mobile/FilterInvoicesStatusCount",filterClass,{ headers: this.headers }).pipe(
+      return this.http.post<any>(this.baseUrl + "/api/Mobile/FilterInvoicesStatusCount", filterClass, { headers: this.headers }).pipe(
         retry(5),
         catchError(this.handleError<any>('getHeroes', []))
       );
@@ -145,17 +150,17 @@ export class GetService {
   }
 
   LeadTimeChartData(usercode: string, userid: string, role: string): Observable<any> {
-    var filterClass=this.sharedParams.GetChartFilterData();
-    filterClass.UserCode=usercode;
-    filterClass.UserID=userid;
+    var filterClass = this.sharedParams.GetChartFilterData();
+    filterClass.UserCode = usercode;
+    filterClass.UserID = userid;
     if (role == "Customer") {
-      return this.http.post<any>(this.baseUrl + "/api/Mobile/FilterLeadTimeCountByUser" , filterClass,{ headers: this.headers }).pipe(
+      return this.http.post<any>(this.baseUrl + "/api/Mobile/FilterLeadTimeCountByUser", filterClass, { headers: this.headers }).pipe(
         retry(5),
         catchError(this.handleError<any>('getHeroes', []))
       );
     }
     else {
-      return this.http.post<any>(this.baseUrl + "/api/Mobile/FilterLeadTimeCount" , filterClass,{ headers: this.headers }).pipe(
+      return this.http.post<any>(this.baseUrl + "/api/Mobile/FilterLeadTimeCount", filterClass, { headers: this.headers }).pipe(
         retry(5),
         catchError(this.handleError<any>('getHeroes', []))
       );

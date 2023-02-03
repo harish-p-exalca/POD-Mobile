@@ -1,7 +1,7 @@
 import { AfterContentInit, AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { AlertController, IonSlides, MenuController, PopoverController, IonContent, Platform, ModalController } from '@ionic/angular';
 import { Router, ActivatedRoute } from '@angular/router';
-import { TokenResponse } from '../models/TokenResponse.model';
+import { ChangesDetected, TokenResponse, UserActionHistory } from '../models/TokenResponse.model';
 import { InvoiceHeaderDetail } from '../models/InvoiceHeaderDetail.model';
 import { LoadingController } from '@ionic/angular';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -37,7 +37,7 @@ export class InvoicePage implements OnInit {
   Divisions = [];
   CustomerGroups: CustomerGroup[] = [];
   filterdata: FilterClass = new FilterClass();
-  isLoadMore:boolean=false;
+  isLoadMore: boolean = false;
   invoiceupdation: InvoiceUpdation1 = new InvoiceUpdation1();
 
   userdetails: TokenResponse = new TokenResponse();
@@ -67,43 +67,43 @@ export class InvoicePage implements OnInit {
     this.userdetails = JSON.parse(this.activatedRoute.snapshot.paramMap.get('user_data'));
     this.dataservice.SignedInUser(this.userdetails);
     if (this.sharedParam.IsInvoiceFilterData) {
-      this.filterdata=new FilterClass();
+      this.filterdata = new FilterClass();
       this.filterdata = Object.assign({}, this.sharedParam.GetInvoiceFilterData());
     }
     else {
-      this.filterdata=new FilterClass();
+      this.filterdata = new FilterClass();
       this.filterdata = Object.assign({}, this.sharedParam.GetChartFilterData());
       if (this.filterdata.Status.length == 0 && this.filterdata.Delivery.length == 0) {
         this.filterdata.Status = ["Open"];
       }
     }
-    this.Plants=this.sharedParam.Plants;
-    this.Organizations=this.sharedParam.Organizations;
-    this.Divisions=this.sharedParam.Divisions;
-    this.CustomerGroups=this.sharedParam.CustomerGroups;
+    this.Plants = this.sharedParam.Plants;
+    this.Organizations = this.sharedParam.Organizations;
+    this.Divisions = this.sharedParam.Divisions;
+    this.CustomerGroups = this.sharedParam.CustomerGroups;
     console.log("Filter data", this.filterdata);
     this.getFilteredInvoices(this.filterdata);
   }
 
   ionViewWillEnter() {
-    
+
   }
 
   getFilteredInvoices(filterClass: FilterClass) {
     filterClass.UserCode = this.userdetails.userCode;
     filterClass.UserID = this.userdetails.userID;
-    filterClass.CurrentPage=this.currentPage;
-    filterClass.Records=20;
+    filterClass.CurrentPage = this.currentPage;
+    filterClass.Records = 20;
     this.loading.presentLoading().then(async () => {
       this.getservice.FilterInvoiceData(filterClass, this.userdetails.userRole).subscribe(data => {
-        if(this.isLoadMore){
+        if (this.isLoadMore) {
           this.FilteredInvoices.push(...data);
-          this.isLoadMore=false;
+          this.isLoadMore = false;
         }
-        else{
-          this.FilteredInvoices=data;
+        else {
+          this.FilteredInvoices = data;
         }
-        console.log("filtered data", this.FilteredInvoices);
+
         this.loadingController.getTop().then((has) => {
           if (has) {
             this.closeLoader();
@@ -141,7 +141,7 @@ export class InvoicePage implements OnInit {
     });
   }
 
-  async OpenDialogModal(HeaderID: number, CreatedBy: string, InvNo: string, InvDate, LRDate,vehicleReportedDate ,isReConfirm: boolean = false) {
+  async OpenDialogModal(HeaderID: number, CreatedBy: string, InvNo: string, InvDate, LRDate, vehicleReportedDate, status, ind, isReConfirm: boolean = false, isWithOutDoc: boolean = false) {
     const ConfirmInvoiceModal = await this.modalCtrl.create({
       component: PendingdailogComponent,
       cssClass: "Pending-Modal",
@@ -151,48 +151,72 @@ export class InvoicePage implements OnInit {
         'invoice_no': InvNo,
         'i_dt': InvDate,
         'l_dt': LRDate,
-        'vehicleReportedDate':vehicleReportedDate,
+        'vehicleReportedDate': vehicleReportedDate,
         'isReConfirm': isReConfirm
       }
     });
     await ConfirmInvoiceModal.present();
-    const { data } = await ConfirmInvoiceModal.onWillDismiss();
-
-    this.loading.presentLoading().then(() => {
-      if (data != null) {
-        this.invoiceupdation.HEADER_ID = HeaderID;
-        this.invoiceupdation.VEHICLE_REPORTED_DATE = new Date(data.reportdate);
-        console.log("Invoice updation", this.invoiceupdation);
-        if (isReConfirm) {
-          this.getservice.addInvoiceAttachment(data.files).subscribe((x: any) => {
-            console.log("Document uploaded successfully", x);
-            setTimeout(() => {
-              this.getFilteredInvoices(this.filterdata);
-              this.closeLoader();
-              this.toast.ReConfirmSuccess();
-            }, 2000);
-          },
-            (catchError) => {
-              this.closeLoader();
-              if (catchError.status == 0) {
-
-                this.toast.internetConnection();
-              }
-              else {
-                this.toast.wentWrongWithUpdatingInvoices();
-              }
-            });
-        }
-        else {
-          //update invoice
-          this.getservice.confirmInvoiceItems(this.invoiceupdation).subscribe((z: any) => {
-            console.log(z);
-            //upload files
-            this.getservice.addInvoiceAttachment(data.files).subscribe((x: any) => {
+    const data = await ConfirmInvoiceModal.onWillDismiss();
+    this.storage.getObject('signedUser').then(res => {
+      this.loading.presentLoading().then(() => {
+        if (data['data'] != null) {
+          this.invoiceupdation.HEADER_ID = HeaderID;
+          this.invoiceupdation.VEHICLE_REPORTED_DATE = new Date(data['data'].reportdate);
+          console.log("Invoice updation", this.invoiceupdation);
+          const Changes = new ChangesDetected();
+          Changes.Status = status != "confirmed" ? status + " to Confirmed" : status;
+          Changes.UnloadedDate = data['data'].reportdate;
+          Changes.DocumentUpload = data['role'];
+          const ActionLog = new UserActionHistory();
+          ActionLog.Action = "Mobile";
+          ActionLog.ChangesDetected = JSON.stringify(Changes);
+          ActionLog.DateTime = new Date();
+          ActionLog.IpAddress = res['ipAddress'] ? res['ipAddress'] : '';
+          ActionLog.Location = res['geoLocation'] ? res['geoLocation'] : "";
+          ActionLog.TransID = this.FilteredInvoices[ind].HEADER_ID;
+          ActionLog.UserName = res['userName'];
+          if (isReConfirm) {
+            this.getservice.addInvoiceAttachment(data['data'].files).subscribe((x: any) => {
               console.log("Document uploaded successfully", x);
-              this.getFilteredInvoices(this.filterdata);
-              this.closeLoader();
-              this.toast.itemDetailsUpdationSuccess();
+              this.getservice.CreateUserActionHistory(ActionLog).subscribe(() => { });
+              setTimeout(() => {
+                this.getFilteredInvoices(this.filterdata);
+                this.closeLoader();
+                this.toast.ReConfirmSuccess();
+              }, 2000);
+            },
+              (catchError) => {
+                this.closeLoader();
+                if (catchError.status == 0) {
+
+                  this.toast.internetConnection();
+                }
+                else {
+                  this.toast.wentWrongWithUpdatingInvoices();
+                }
+              });
+          }
+          else {
+            //update invoice
+            this.getservice.confirmInvoiceItems(this.invoiceupdation).subscribe((z: any) => {
+              console.log(z);
+              //upload files
+              this.getservice.addInvoiceAttachment(data['data'].files).subscribe((x: any) => {
+                console.log("Document uploaded successfully", x);
+                this.getservice.CreateUserActionHistory(ActionLog).subscribe(() => { });
+                this.getFilteredInvoices(this.filterdata);
+                this.closeLoader();
+                this.toast.itemDetailsUpdationSuccess();
+              },
+                (catchError) => {
+                  this.closeLoader();
+                  if (catchError.status == 0) {
+                    this.toast.internetConnection();
+                  }
+                  else {
+                    this.toast.wentWrongWithUpdatingInvoices();
+                  }
+                });
             },
               (catchError) => {
                 this.closeLoader();
@@ -203,22 +227,38 @@ export class InvoicePage implements OnInit {
                   this.toast.wentWrongWithUpdatingInvoices();
                 }
               });
-          },
-            (catchError) => {
-              this.closeLoader();
-              if (catchError.status == 0) {
-                this.toast.internetConnection();
-              }
-              else {
-                this.toast.wentWrongWithUpdatingInvoices();
-              }
-          });
+          }
         }
-      }
-      else {
-        this.closeLoader();
-        this.toast.confirmationCancelled();
-      }
+        else {
+          this.closeLoader();
+          this.toast.confirmationCancelled();
+        }
+      });
+    });
+
+  }
+
+  async ConfirmQty(i) {
+    this.storage.getObject('signedUser').then(res => {
+      this.invoiceupdation.HEADER_ID = this.FilteredInvoices[i].HEADER_ID;
+      this.invoiceupdation.VEHICLE_REPORTED_DATE = new Date(this.FilteredInvoices[i].VEHICLE_REPORTED_DATE);
+      console.log("Invoice updation", this.invoiceupdation);
+      const Changes = new ChangesDetected();
+      Changes.Status = this.FilteredInvoices[i].STATUS != "confirmed" ? this.FilteredInvoices[i].STATUS + " to Confirmed" : this.FilteredInvoices[i].STATUS;
+      Changes.UnloadedDate = this.FilteredInvoices[i].VEHICLE_REPORTED_DATE;
+      // Changes.DocumentUpload = data['role'];
+      const ActionLog = new UserActionHistory();
+      ActionLog.Action = "Mobile";
+      ActionLog.ChangesDetected = JSON.stringify(Changes);
+      ActionLog.DateTime = new Date();
+      ActionLog.IpAddress = res['ipAddress'] ? res['ipAddress'] : '';
+      ActionLog.Location = res['geoLocation'] ? res['geoLocation'] : "";
+      ActionLog.TransID = this.FilteredInvoices[i].HEADER_ID;
+      ActionLog.UserName = res['userName'];
+      this.getservice.confirmInvoiceItems(this.invoiceupdation).subscribe((z: any) => {
+        this.getservice.CreateUserActionHistory(ActionLog).subscribe(() => { });
+        this.getFilteredInvoices(this.filterdata);
+      });
     });
   }
 
@@ -253,7 +293,7 @@ export class InvoicePage implements OnInit {
     await filterModal.present();
     const { data } = await filterModal.onWillDismiss();
     if (data) {
-      this.currentPage=1;
+      this.currentPage = 1;
       this.filterdata = data as FilterClass;
       this.sharedParam.IsInvoiceFilterData = true;
       this.sharedParam.SetInvoiceFilterData(this.filterdata);
@@ -303,10 +343,10 @@ export class InvoicePage implements OnInit {
     });
   }
 
-  loadMoreInvoices(event){
-    this.isLoadMore=true;
+  loadMoreInvoices(event) {
+    this.isLoadMore = true;
     this.currentPage++;
-    this.filterdata.CurrentPage=this.currentPage;
+    this.filterdata.CurrentPage = this.currentPage;
     this.getFilteredInvoices(this.filterdata);
     if (event) {
       event.target.complete();

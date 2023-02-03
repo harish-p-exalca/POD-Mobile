@@ -127,7 +127,7 @@ export class DescriptiondailogComponent implements OnInit {
         this.form.append('CreatedBy', this.createdby);
         this.returndata.files = this.form;
         this.returndata.reportdate = this.DatePipe.transform(this.reportdate.value, 'yyyy-MM-dd');
-        this.modalCtrl.dismiss(this.returndata);
+        this.modalCtrl.dismiss(this.returndata, this.selectedFile.name);
       }
       else {
         if (this.isfileempty) {
@@ -141,7 +141,7 @@ export class DescriptiondailogComponent implements OnInit {
         this.form.append('CreatedBy', this.createdby);
         this.returndata.files = this.form;
         this.returndata.reportdate = this.DatePipe.transform(this.reportdate.value, 'yyyy-MM-dd');
-        this.modalCtrl.dismiss(this.returndata);
+        this.modalCtrl.dismiss(this.returndata, this.selectedFile.name);
       }
       else {
         this.reportdate.markAsTouched();
@@ -155,7 +155,7 @@ export class DescriptiondailogComponent implements OnInit {
           this.form.append('CreatedBy', this.createdby);
           this.returndata.files = this.form;
           this.returndata.reportdate = this.DatePipe.transform(this.reportdate.value, 'yyyy-MM-dd');
-          this.modalCtrl.dismiss(this.returndata);
+          this.modalCtrl.dismiss(this.returndata, this.selectedFile.name);
         }
         else {
           if (this.isfileempty) {

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChildren, QueryList } from '@angular/core';
-import { TokenResponse } from '../models/TokenResponse.model';
+import { ChangesDetected, TokenResponse, UserActionHistory } from '../models/TokenResponse.model';
 import { Router, ActivatedRoute } from '@angular/router';
 import { InvoiceDescriptionResolver } from '../services/InvoiceDescriptionResolver.service';
 import { InvoiceHeaderDetail } from '../models/InvoiceHeaderDetail.model';
@@ -241,7 +241,7 @@ export class DescriptionPage implements OnInit {
 
   }
 
-  onFormSubmit(reportedDate) {
+  onFormSubmit(reportedDate, ActionLog) {
     let reasonctrl = (<FormArray>this.dataForm.get('items'));
     if (reasonctrl.valid) {
       this.loading.presentLoading().then(() => {
@@ -272,12 +272,14 @@ export class DescriptionPage implements OnInit {
           this.copydescription_data[h].RECEIVED_QUANTITY = formvalues[h].rcvd;
           this.copydescription_data[h].STATUS = "Saved"
         }
+        ActionLog.Status = this.invoicedetails.STATUS + "to Saved";
         console.log(this.copydescription_data);
         this.invoiceupdation.VEHICLE_REPORTED_DATE = reportedDate;
         this.invoiceupdation.InvoiceItems = this.copydescription_data;
         this.getservice.updateInvoiceItems(this.invoiceupdation).subscribe((z: any) => {
           this.dataArr = [];
           this.getservice.getItemDescription(this.userdetails.userCode, this.userdetails.userID, this.userdetails.userRole, JSON.stringify(this.header_id.HEADER_ID)).subscribe((l: any) => {
+            this.getservice.CreateUserActionHistory(ActionLog).subscribe(() => { });
             this.description_data = l;
             this.copydescription_data = this.description_data;
             this.CreateFormControls()
@@ -319,46 +321,70 @@ export class DescriptionPage implements OnInit {
     });
     console.log("isave,isrecocnfirm",isSave,isReConfirm);
     await descripModal.present();
-    const { data } = await descripModal.onWillDismiss();
-    this.dataFromDailog = data;
-
-    this.loading.presentLoading().then(() => {
-      if (this.dataFromDailog != null && this.refreshTableData()) {
-        console.log("dialogRes",this.dataFromDailog);
-        if(isSave){
-          this.onFormSubmit(this.dataFromDailog.reportdate);
-        }
-        else if(isReConfirm){
-          this.getservice.addInvoiceAttachment(data.files).subscribe((x: any) => {
-            console.log("Document uploaded successfully", x);
-            setTimeout(() => {
-              this.router.navigate(['/invoice', JSON.stringify(this.userdetails)]);
-              this.closeLoader();
-              this.toast.ReConfirmSuccess();
-            }, 2000);
-          },
-            (catchError) => {
-              this.closeLoader();
-              if (catchError.status == 0) {
-
-                this.toast.internetConnection();
-              }
-              else {
-                this.toast.wentWrongWithUpdatingInvoices();
-              }
-            });
-        }
-        else {
-          this.invoiceupdation.VEHICLE_REPORTED_DATE = new Date(this.dataFromDailog.reportdate);
-          //update invoice
-          this.getservice.updateInvoiceItems(this.invoiceupdation).subscribe((z: any) => {
-            console.log(z);
-            //upload files
-            this.getservice.addInvoiceAttachment(data.files).subscribe((x: any) => {
+    const  data  = await descripModal.onWillDismiss();
+    this.dataFromDailog = data['data'];
+    this.storage.getObject('signedUser').then(res => { 
+      this.loading.presentLoading().then(() => {
+        if (this.dataFromDailog != null && this.refreshTableData()) {
+          console.log("dialogRes", this.dataFromDailog);
+          const Changes = new ChangesDetected();
+          Changes.Status = this.invoicedetails.STATUS != "confirmed" ? this.invoicedetails.STATUS + " to Confirmed" : this.invoicedetails.STATUS;
+          Changes.UnloadedDate = data['data'].reportdate;
+          Changes.DocumentUpload = data['role'];
+          const ActionLog = new UserActionHistory();
+          ActionLog.Action = "Mobile";
+          ActionLog.ChangesDetected = JSON.stringify(Changes);
+          ActionLog.DateTime = new Date();
+          ActionLog.IpAddress = res['ipAddress'] ? res['ipAddress'] : '';
+          ActionLog.Location = res['geoLocation'] ? res['geoLocation'] : "";
+          ActionLog.TransID = this.invoicedetails.HEADER_ID;
+          ActionLog.UserName = res['userName'];
+          if (isSave) {
+            this.onFormSubmit(this.dataFromDailog.reportdate,ActionLog);
+          }
+          else if (isReConfirm) {
+            this.getservice.addInvoiceAttachment(data['data'].files).subscribe((x: any) => {
               console.log("Document uploaded successfully", x);
-              this.router.navigate(['/invoice', JSON.stringify(this.userdetails)]);
-              this.closeLoader();
-              this.toast.itemDetailsUpdationSuccess();
+              this.getservice.CreateUserActionHistory(ActionLog).subscribe(() => { });
+              setTimeout(() => {
+                this.router.navigate(['/invoice', JSON.stringify(this.userdetails)]);
+                this.closeLoader();
+                this.toast.ReConfirmSuccess();
+              }, 2000);
+            },
+              (catchError) => {
+                this.closeLoader();
+                if (catchError.status == 0) {
+
+                  this.toast.internetConnection();
+                }
+                else {
+                  this.toast.wentWrongWithUpdatingInvoices();
+                }
+              });
+          }
+          else {
+            this.invoiceupdation.VEHICLE_REPORTED_DATE = new Date(this.dataFromDailog.reportdate);
+            //update invoice
+            this.getservice.updateInvoiceItems(this.invoiceupdation).subscribe((z: any) => {
+              console.log(z);
+              //upload files
+              this.getservice.addInvoiceAttachment(data['data'].files).subscribe((x: any) => {
+                this.getservice.CreateUserActionHistory(ActionLog).subscribe(() => { });
+                console.log("Document uploaded successfully", x);
+                this.router.navigate(['/invoice', JSON.stringify(this.userdetails)]);
+                this.closeLoader();
+                this.toast.itemDetailsUpdationSuccess();
+              },
+                (catchError) => {
+                  this.closeLoader();
+                  if (catchError.status == 0) {
+                    this.toast.internetConnection();
+                  }
+                  else {
+                    this.toast.wentWrongWithUpdatingInvoices();
+                  }
+                });
             },
               (catchError) => {
                 this.closeLoader();
@@ -369,23 +395,38 @@ export class DescriptionPage implements OnInit {
                   this.toast.wentWrongWithUpdatingInvoices();
                 }
               });
-          },
-            (catchError) => {
-              this.closeLoader();
-              if (catchError.status == 0) {
-                this.toast.internetConnection();
-              }
-              else {
-                this.toast.wentWrongWithUpdatingInvoices();
-              }
-          });
+          }
+          this.closeLoader();
         }
-        this.closeLoader();
-      }
-      else {
-        this.loadingcontroller.dismiss();
-        this.toast.confirmationCancelled();
-      }
+        else {
+          this.loadingcontroller.dismiss();
+          this.toast.confirmationCancelled();
+        }
+      });
+    });
+    
+  }
+
+  async ConfirmQty() {
+    this.storage.getObject('signedUser').then(res => {
+      // this.invoiceupdation.HEADER_ID = this.invoicedetails.HEADER_ID;
+      this.invoiceupdation.VEHICLE_REPORTED_DATE = new Date(this.invoicedetails.VEHICLE_REPORTED_DATE);
+      console.log("Invoice updation", this.invoiceupdation);
+      const Changes = new ChangesDetected();
+      Changes.Status = this.invoicedetails.STATUS != "confirmed" ? this.invoicedetails.STATUS + " to Confirmed" : this.invoicedetails.STATUS;
+      Changes.UnloadedDate = this.invoicedetails.VEHICLE_REPORTED_DATE;
+      // Changes.DocumentUpload = data['role'];
+      const ActionLog = new UserActionHistory();
+      ActionLog.Action = "Mobile";
+      ActionLog.ChangesDetected = JSON.stringify(Changes);
+      ActionLog.DateTime = new Date(this.invoicedetails.VEHICLE_REPORTED_DATE);
+      ActionLog.IpAddress = res['ipAddress'] ? res['ipAddress'] : '';
+      ActionLog.Location = res['geoLocation'] ? res['geoLocation'] : "";
+      ActionLog.TransID = this.invoicedetails.HEADER_ID;
+      ActionLog.UserName = res['userName'];
+      this.getservice.updateInvoiceItems(this.invoiceupdation).subscribe((z: any) => {
+        this.getservice.CreateUserActionHistory(ActionLog).subscribe(() => { });
+      });
     });
   }
 
