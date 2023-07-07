@@ -356,36 +356,42 @@ export class DescriptionPage implements OnInit {
         console.log(this.copydescription_data);
         this.invoiceupdation.VEHICLE_REPORTED_DATE = reportedDate;
         this.invoiceupdation.InvoiceItems = this.copydescription_data;
-        this.getservice.updateInvoiceItems(this.invoiceupdation).subscribe(
-          (z: any) => {
-            this.dataArr = [];
-            this.getservice
-              .getItemDescription(
-                this.userdetails.userCode,
-                this.userdetails.userID,
-                this.userdetails.userRole,
-                JSON.stringify(this.header_id.HEADER_ID)
-              )
-              .subscribe((l: any) => {
-                this.getservice
-                  .CreateUserActionHistory(ActionLog)
-                  .subscribe(() => {});
-                this.description_data = l;
-                this.copydescription_data = this.description_data;
-                this.CreateFormControls();
-              });
-            this.toast.itemDetailsUpdationSuccess();
-          },
-          (catchError) => {
-            if (catchError.status == 0) {
-              this.toast.internetConnection();
-              this.loading.loadingController.dismiss();
-            } else {
-              this.toast.wentWrong();
-              this.loading.loadingController.dismiss();
+        if (
+          this.invoiceupdation.VEHICLE_REPORTED_DATE != null &&
+          this.invoiceupdation.VEHICLE_REPORTED_DATE.toString().includes("1970")
+        ) {
+          this.getservice.updateInvoiceItems(this.invoiceupdation).subscribe(
+            (z: any) => {
+              this.dataArr = [];
+              this.getservice
+                .getItemDescription(
+                  this.userdetails.userCode,
+                  this.userdetails.userID,
+                  this.userdetails.userRole,
+                  JSON.stringify(this.header_id.HEADER_ID)
+                )
+                .subscribe((l: any) => {
+                  this.getservice
+                    .CreateUserActionHistory(ActionLog)
+                    .subscribe(() => {});
+                  this.description_data = l;
+                  this.copydescription_data = this.description_data;
+                  this.CreateFormControls();
+                });
+              this.toast.itemDetailsUpdationSuccess();
+            },
+            (catchError) => {
+              if (catchError.status == 0) {
+                this.toast.internetConnection();
+                this.loading.loadingController.dismiss();
+              } else {
+                this.toast.wentWrong();
+                this.loading.loadingController.dismiss();
+              }
             }
-          }
-        );
+          );
+        }
+          
         this.loading.loadingController.dismiss();
       });
     } else {
@@ -466,44 +472,54 @@ export class DescriptionPage implements OnInit {
               this.dataFromDailog.reportdate
             );
             //update invoice
-            this.getservice.updateInvoiceItems(this.invoiceupdation).subscribe(
-              (z: any) => {
-                console.log(z);
-                //upload files
-                this.getservice
-                  .addInvoiceAttachment(data["data"].files)
-                  .subscribe(
-                    (x: any) => {
-                      this.getservice
-                        .CreateUserActionHistory(ActionLog)
-                        .subscribe(() => {});
-                      console.log("Document uploaded successfully", x);
-                      this.router.navigate([
-                        "/invoice",
-                        JSON.stringify(this.userdetails),
-                      ]);
-                      this.closeLoader();
-                      this.toast.itemDetailsUpdationSuccess();
-                    },
-                    (catchError) => {
-                      this.closeLoader();
-                      if (catchError.status == 0) {
-                        this.toast.internetConnection();
-                      } else {
-                        this.toast.wentWrongWithUpdatingInvoices();
-                      }
-                    }
-                  );
-              },
-              (catchError) => {
-                this.closeLoader();
-                if (catchError.status == 0) {
-                  this.toast.internetConnection();
-                } else {
-                  this.toast.wentWrongWithUpdatingInvoices();
-                }
-              }
-            );
+            if (
+              this.invoiceupdation.VEHICLE_REPORTED_DATE != null &&
+              this.invoiceupdation.VEHICLE_REPORTED_DATE.toString().includes("1970")
+            ) {
+               this.getservice
+                 .updateInvoiceItems(this.invoiceupdation)
+                 .subscribe(
+                   (z: any) => {
+                     console.log(z);
+                     //upload files
+                     this.getservice
+                       .addInvoiceAttachment(data["data"].files)
+                       .subscribe(
+                         (x: any) => {
+                           this.getservice
+                             .CreateUserActionHistory(ActionLog)
+                             .subscribe(() => {});
+                           console.log("Document uploaded successfully", x);
+                           this.router.navigate([
+                             "/invoice",
+                             JSON.stringify(this.userdetails),
+                           ]);
+                           this.closeLoader();
+                           this.toast.itemDetailsUpdationSuccess();
+                         },
+                         (catchError) => {
+                           this.closeLoader();
+                           if (catchError.status == 0) {
+                             this.toast.internetConnection();
+                           } else {
+                             this.toast.wentWrongWithUpdatingInvoices();
+                           }
+                         }
+                       );
+                   },
+                   (catchError) => {
+                     this.closeLoader();
+                     if (catchError.status == 0) {
+                       this.toast.internetConnection();
+                     } else {
+                       this.toast.wentWrongWithUpdatingInvoices();
+                     }
+                   }
+                 );
+            }
+            else {
+              
+             }
           }
           this.closeLoader();
         } else {
@@ -565,13 +581,19 @@ export class DescriptionPage implements OnInit {
       ActionLog.Location = res["geoLocation"] ? res["geoLocation"] : "";
       ActionLog.TransID = this.invoicedetails.HEADER_ID;
       ActionLog.UserName = res["userName"];
-      this.getservice
-        .updateInvoiceItems(this.invoiceupdation)
-        .subscribe((z: any) => {
-          this.getservice
-            .CreateUserActionHistory(ActionLog)
-            .subscribe(() => {});
-        });
+      if (
+        this.invoiceupdation.VEHICLE_REPORTED_DATE != null &&
+        this.invoiceupdation.VEHICLE_REPORTED_DATE.toString().includes("1970")
+      ) {
+         this.getservice
+           .updateInvoiceItems(this.invoiceupdation)
+           .subscribe((z: any) => {
+             this.getservice
+               .CreateUserActionHistory(ActionLog)
+               .subscribe(() => {});
+           });
+      }
+       
     });
   }
 
