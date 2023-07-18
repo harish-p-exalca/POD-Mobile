@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   buildVersion:"2.1.2",
   baseUrl:"http://localhost:8002/"
-  // baseUrl:"http://210.212.229.104:8001/"
+  //baseUrl:"http://210.212.229.104:8001/"
   // baseUrl:"https://pod.amararaja.com/v1/"
 };
 

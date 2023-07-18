@@ -248,22 +248,19 @@ export class InvoicePage implements OnInit {
           } else {
             //update invoice
             if (
-              this.invoiceupdation.VEHICLE_REPORTED_DATE != null &&
-              this.invoiceupdation.VEHICLE_REPORTED_DATE.toString().includes(
+              this .invoiceupdation.VEHICLE_REPORTED_DATE != null &&
+              !this.invoiceupdation.VEHICLE_REPORTED_DATE.toString().includes(
                 "1970"
               )
             ) {
               this.getservice
-                .confirmInvoiceItems(this.invoiceupdation)
+                .addInvoiceAttachment(data["data"].files)
                 .subscribe(
-                  (z: any) => {
-                    console.log(z);
-                    //upload files
+                  (x: any) => {
                     this.getservice
-                      .addInvoiceAttachment(data["data"].files)
+                      .confirmInvoiceItems(this.invoiceupdation)
                       .subscribe(
-                        (x: any) => {
-                          console.log("Document uploaded successfully", x);
+                        (z: any) => {
                           this.getservice
                             .CreateUserActionHistory(ActionLog)
                             .subscribe(() => {});
@@ -290,6 +287,9 @@ export class InvoicePage implements OnInit {
                     }
                   }
                 );
+            }
+            else {
+              this.toast.wrongVehicleUnloadedDate();
             }
           }
         } else {
@@ -324,7 +324,7 @@ export class InvoicePage implements OnInit {
       ActionLog.UserName = res["userName"];
       if (
         this.invoiceupdation.VEHICLE_REPORTED_DATE != null &&
-        this.invoiceupdation.VEHICLE_REPORTED_DATE.toString().includes("1970")
+        !this.invoiceupdation.VEHICLE_REPORTED_DATE.toString().includes("1970")
       ) {
         this.getservice
           .confirmInvoiceItems(this.invoiceupdation)
