@@ -165,18 +165,18 @@ export class HomePage implements OnInit {
 
             });
           }).catch(err => {
-            this._httpClient.get("https://api.ipify.org/?format=json").subscribe((res: any) => {
-              this.response_data.ipAddress = res.ip;
-              this.response_data.geoLocation = "-";
+            // this._httpClient.get("https://api.ipify.org/?format=json").subscribe((res: any) => {
+            //   this.response_data.ipAddress = res.ip;
+            //   this.response_data.geoLocation = "-";
 
-              this.storage.setObject('signedUser', this.response_data);
+            //   this.storage.setObject('signedUser', this.response_data);
 
-              this.dataservice.SignedInUser(this.response_data);
+            //   this.dataservice.SignedInUser(this.response_data);
 
-              this.router.navigate(['charts', JSON.stringify(this.response_data)]).then(() => {
-                this.loadingController.dismiss()
-              })
-              this.toast.loginsuccess();
+            //   this.router.navigate(['charts', JSON.stringify(this.response_data)]).then(() => {
+            //     this.loadingController.dismiss()
+            //   })
+              this.toast.locationMandate();
             });
           });
 

@@ -140,6 +140,15 @@ export class ToastMaker {
     (await tst).present();
   }
 
+  async locationMandate() {
+    let tst = this.toast.create({
+      message: "Location access is mandatory.",
+      duration: 3000,
+      mode: "md",
+    });
+    (await tst).present();
+  }
+
   async fileExt(s: string) {
     let tst = this.toast.create({
       message: "selected file " + s,
