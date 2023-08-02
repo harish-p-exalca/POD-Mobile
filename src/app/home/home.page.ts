@@ -1,47 +1,51 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { GetService } from '../services/getservice.service';
-import { geoLocation, TokenResponse } from '../models/TokenResponse.model';
-import { catchError } from 'rxjs/operators';
-import { MenuController, ToastController, Platform, AlertController, ModalController } from '@ionic/angular';
-import { DataService } from '../services/BehaviourSubject.service';
-import { StorageService } from '../services/storage.service';
-import { LoadingController } from '@ionic/angular';
-import { ToastMaker } from '../Toast/ToastMaker.service';
-import { LoadingAnimation } from '../LoadingAnimation/LoadingAnimation.service';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { ForgotPasswordComponent } from '../ForgotPassword/forgot-password/forgot-password.component';
-import { ForgotPasswordOTPComponent } from '../ForgotPassword/forgot-password-otp/forgot-password-otp.component';
-import { SigninPage } from '../signin/signin.page';
-import { ForgotPasswordModalComponent } from '../forgot-password-modal/forgot-password-modal.component';
-import { ForgotPasswordOtpModalComponent } from '../forgot-password-otp-modal/forgot-password-otp-modal.component';
-import { ForgotPasswordRequest } from '../models/ForgotPasswordRequest.model';
-import { OTPResponseBody } from '../models/OTPResponseBody.model';
-import { environment } from 'src/environments/environment';
-import { SharedParameterService } from '../services/shared-parameter.service';
-import { FilterClass } from '../models/FilterParam.model';
-import { HttpClient } from '@angular/common/http';
-
+import { Component, OnInit } from "@angular/core";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
+import { GetService } from "../services/getservice.service";
+import { geoLocation, TokenResponse } from "../models/TokenResponse.model";
+import { catchError } from "rxjs/operators";
+import {
+  MenuController,
+  ToastController,
+  Platform,
+  AlertController,
+  ModalController,
+} from "@ionic/angular";
+import { DataService } from "../services/BehaviourSubject.service";
+import { StorageService } from "../services/storage.service";
+import { LoadingController } from "@ionic/angular";
+import { ToastMaker } from "../Toast/ToastMaker.service";
+import { LoadingAnimation } from "../LoadingAnimation/LoadingAnimation.service";
+import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
+import { ForgotPasswordComponent } from "../ForgotPassword/forgot-password/forgot-password.component";
+import { ForgotPasswordOTPComponent } from "../ForgotPassword/forgot-password-otp/forgot-password-otp.component";
+import { SigninPage } from "../signin/signin.page";
+import { ForgotPasswordModalComponent } from "../forgot-password-modal/forgot-password-modal.component";
+import { ForgotPasswordOtpModalComponent } from "../forgot-password-otp-modal/forgot-password-otp-modal.component";
+import { ForgotPasswordRequest } from "../models/ForgotPasswordRequest.model";
+import { OTPResponseBody } from "../models/OTPResponseBody.model";
+import { environment } from "src/environments/environment";
+import { SharedParameterService } from "../services/shared-parameter.service";
+import { FilterClass } from "../models/FilterParam.model";
+import { HttpClient } from "@angular/common/http";
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  selector: "app-home",
+  templateUrl: "home.page.html",
+  styleUrls: ["home.page.scss"],
 })
 export class HomePage implements OnInit {
-
   appVersion: string = environment.buildVersion;
   fieldTextType = false;
   target_email: string = "";
   forgotpasswordparams: ForgotPasswordRequest = new ForgotPasswordRequest();
   response_data: TokenResponse = new TokenResponse();
   reactive_signin = new FormGroup({
-    username: new FormControl('', Validators.required),
-    password: new FormControl('', Validators.required)
-
+    username: new FormControl("", Validators.required),
+    password: new FormControl("", Validators.required),
   });
-  constructor(private router: Router,
+  constructor(
+    private router: Router,
     private alrtctrl: AlertController,
     private modalController: ModalController,
     private dialog: MatDialog,
@@ -54,13 +58,11 @@ export class HomePage implements OnInit {
     public menuCtrl: MenuController,
     private storage: StorageService,
     private sharedService: SharedParameterService,
-    private _httpClient: HttpClient,
+    private _httpClient: HttpClient
   ) {
     this.dataservice.SignedInUser(this.response_data);
   }
-  ngOnInit(): void {
-
-  }
+  ngOnInit(): void {}
 
   ionViewWillEnter() {
     this.menuCtrl.enable(false);
@@ -75,7 +77,6 @@ export class HomePage implements OnInit {
   //  forgotpasswordOTP.autoFocus=true;
   //  forgotpasswordOTP.hasBackdrop =true;
 
-
   // const emailformComp  = this.dialog.open(ForgotPasswordComponent,forgotpasswordConfig);
   //  emailformComp.afterClosed().subscribe((z:any)=>{
   //    forgotpasswordOTP.data={
@@ -86,7 +87,7 @@ export class HomePage implements OnInit {
   //     if(this.target_email!=null){
   //       this.getService.sendEmailforOTP(this.target_email).subscribe((x:any)=>{
   //         this.loading.loadingController.dismiss().then(()=>{
-  //           this.dialog.open(ForgotPasswordOTPComponent,forgotpasswordOTP)  
+  //           this.dialog.open(ForgotPasswordOTPComponent,forgotpasswordOTP)
   //         })
 
   //        },
@@ -94,7 +95,6 @@ export class HomePage implements OnInit {
   //             catchError => {
   //               this.loadingController.dismiss();
   //               console.log(catchError);
-
 
   //               if(catchError.status==0){
 
@@ -112,173 +112,151 @@ export class HomePage implements OnInit {
   //     }
   //    })
 
-
-
   //  })
   // }
 
   getLocation(): Promise<any> {
+    console.log("getLocation");
     return new Promise<any>((resolve, reject) => {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          if (position) {
-            const Location = new geoLocation();
-            Location.latitude = position.coords.latitude;
-            Location.longitude = position.coords.longitude;
-            resolve(Location);
-          }
-        },
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            if (position) {
+              const Location = new geoLocation();
+              Location.latitude = position.coords.latitude;
+              Location.longitude = position.coords.longitude;
+              console.log(Location);
+              resolve(Location);
+            }
+          },
           (error) => {
+            console.log(error);
             reject(String(error));
-          });
-      }
-      else {
+          }
+        );
+      } else {
         alert("Geolocation is not supported by this browser.");
         reject("");
       }
     });
-
   }
 
   onClickSubmit() {
     this.loading.presentLoading().then(() => {
-
-      let temp = "username=" + this.reactive_signin.get('username').value + "&password=" + this.reactive_signin.get('password').value + "&grant_type=password";
+      let temp =
+        "username=" +
+        this.reactive_signin.get("username").value +
+        "&password=" +
+        this.reactive_signin.get("password").value +
+        "&grant_type=password";
 
       if (this.reactive_signin.valid) {
-        this.getService.loginResponse(temp).subscribe((data: any) => {
-          this.response_data = data;
+        this.getService.loginResponse(temp).subscribe(
+          (data: any) => {
+            this.response_data = data;
 
-          this.getLocation().then(response => {
-            this._httpClient.get("https://api.ipify.org/?format=json").subscribe((res: any) => {
-              this.response_data.ipAddress = res.ip;
-              this.response_data.geoLocation = JSON.stringify(response);
+            this.getLocation()
+              .then((response) => {
+                this._httpClient
+                  .get("https://api.ipify.org/?format=json")
+                  .subscribe((res: any) => {
+                    this.response_data.ipAddress = res.ip;
+                    this.response_data.geoLocation = JSON.stringify(response);
 
-              this.storage.setObject('signedUser', this.response_data);
+                    this.storage.setObject("signedUser", this.response_data);
 
-              this.dataservice.SignedInUser(this.response_data);
+                    this.dataservice.SignedInUser(this.response_data);
 
-              this.router.navigate(['charts', JSON.stringify(this.response_data)]).then(() => {
-                this.loadingController.dismiss()
+                    this.router
+                      .navigate(["charts", JSON.stringify(this.response_data)])
+                      .then(() => {
+                        this.loadingController.dismiss();
+                      });
+                    this.toast.loginsuccess();
+                  });
               })
-              this.toast.loginsuccess();
-
-            });
-          }).catch(err => {
-            // this._httpClient.get("https://api.ipify.org/?format=json").subscribe((res: any) => {
-            //   this.response_data.ipAddress = res.ip;
-            //   this.response_data.geoLocation = "-";
-
-            //   this.storage.setObject('signedUser', this.response_data);
-
-            //   this.dataservice.SignedInUser(this.response_data);
-
-            //   this.router.navigate(['charts', JSON.stringify(this.response_data)]).then(() => {
-            //     this.loadingController.dismiss()
-            //   })
-              this.toast.locationMandate();
-            });
-          });
-
-
-
-        },
-
-          catchError => {
+              .catch((err) => {
+                this.loadingController.dismiss();
+                this.toast.locationMandate();
+              });
+          },
+          (catchError) => {
             this.loadingController.dismiss();
             console.log(catchError);
 
-
             if (catchError.status == 0) {
-
               this.toast.internetConnection();
-            }
-            else if (catchError.status == 400) {
+            } else if (catchError.status == 400) {
               this.toast.incorrectCredentials();
             }
-
           }
-
-        )
-      }
-      else {
+        );
+      } else {
         this.loadingController.dismiss();
         this.toast.incorrectCredentials();
       }
     });
-
-
-
   }
 
   async onlclickForgotPasswordModal() {
     const modal = await this.modalController.create({
       component: ForgotPasswordModalComponent,
-      cssClass: "forgot-password-modal"
-    })
+      cssClass: "forgot-password-modal",
+    });
     await modal.present();
     modal.onDidDismiss().then((data: any) => {
-      console.log(data['data']);
+      console.log(data["data"]);
 
-      this.forgotpasswordparams = data['data'].req as ForgotPasswordRequest;
+      this.forgotpasswordparams = data["data"].req as ForgotPasswordRequest;
       this.loading.presentLoading().then(() => {
-
         if (this.forgotpasswordparams.mode == "email") {
-          this.getService.sendEmailforOTP(this.forgotpasswordparams.UserName).subscribe((x: any) => {
-            this.loading.loadingController.dismiss().then(() => {
-              this.onlclickOTPModal();
-            })
+          this.getService
+            .sendEmailforOTP(this.forgotpasswordparams.UserName)
+            .subscribe(
+              (x: any) => {
+                this.loading.loadingController.dismiss().then(() => {
+                  this.onlclickOTPModal();
+                });
+              },
 
-          },
+              (catchError) => {
+                this.loadingController.dismiss();
+                console.log(catchError);
 
-            catchError => {
-              this.loadingController.dismiss();
-              console.log(catchError);
-
-
-              if (catchError.status == 0) {
-
-                this.toast.internetConnection();
+                if (catchError.status == 0) {
+                  this.toast.internetConnection();
+                } else if (catchError.status == 400) {
+                  this.toast.wentWrong();
+                }
               }
-              else if (catchError.status == 400) {
-                this.toast.wentWrong();
-              }
-
-            }
-          )
-        }
-        else if (this.forgotpasswordparams.mode == "phone") {
-          this.getService.sendSMSforOTP({ "UserName": this.forgotpasswordparams.UserName }).subscribe((h: OTPResponseBody | string) => {
-            this.loadingController.dismiss().then(() => {
-              console.log(h.valueOf());
-              this.onlclickOTPModal(h.valueOf());
-            })
-
-
-
-          })
-        }
-        else {
+            );
+        } else if (this.forgotpasswordparams.mode == "phone") {
+          this.getService
+            .sendSMSforOTP({ UserName: this.forgotpasswordparams.UserName })
+            .subscribe((h: OTPResponseBody | string) => {
+              this.loadingController.dismiss().then(() => {
+                console.log(h.valueOf());
+                this.onlclickOTPModal(h.valueOf());
+              });
+            });
+        } else {
           this.loadingController.dismiss();
         }
-      })
+      });
     });
-
-
-
   }
   async onlclickOTPModal(otpinfo?) {
     const OTPmodal = await this.modalController.create({
       component: ForgotPasswordOtpModalComponent,
       cssClass: "OTP-password-modal",
-      componentProps: { 'OTPinfo': otpinfo ? otpinfo : this.forgotpasswordparams.UserName }
-    })
+      componentProps: {
+        OTPinfo: otpinfo ? otpinfo : this.forgotpasswordparams.UserName,
+      },
+    });
     return await OTPmodal.present();
   }
-
 
   showpassword() {
     this.fieldTextType = !this.fieldTextType;
   }
-
 }

@@ -392,8 +392,9 @@ export class DescriptionPage implements OnInit {
               }
             }
           );
+        } else {
+          this.toast.wrongVehicleUnloadedDate();
         }
-
         this.loading.loadingController.dismiss();
       });
     } else {
@@ -593,6 +594,8 @@ export class DescriptionPage implements OnInit {
               .CreateUserActionHistory(ActionLog)
               .subscribe(() => {});
           });
+      } else {
+        this.toast.wrongVehicleUnloadedDate();
       }
     });
   }
